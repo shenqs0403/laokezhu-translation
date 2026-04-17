@@ -3,10 +3,13 @@ pub mod database_manager;
 use tauri::AppHandle;
 use tauri_plugin_log::log::LevelFilter;
 use tauri_plugin_log::{Target, TargetKind};
+use crate::common::database_manager::init_database;
 
 /// 当前 common 模块的初始化
 pub fn init(app_handle: &AppHandle) -> tauri::Result<()> {
-    init_log(app_handle)
+    init_log(app_handle)?;
+    init_database(app_handle)?;
+    Ok(())
 }
 
 /// 初始化日志
