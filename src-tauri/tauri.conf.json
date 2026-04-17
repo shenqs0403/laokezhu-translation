@@ -12,9 +12,20 @@
   "app": {
     "windows": [
       {
-        "title": "laokezhu-translation",
-        "width": 800,
-        "height": 600
+        "label": "hide",
+        "visible": false
+      },
+      {
+        "label": "config",
+        "width": 400,
+        "height": 700,
+        "create": false
+      },
+      {
+        "label": "about",
+        "width": 400,
+        "height": 700,
+        "create": false
       }
     ],
     "security": {

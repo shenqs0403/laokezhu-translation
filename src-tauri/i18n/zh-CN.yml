@@ -1,0 +1,6 @@
+tray:
+  config:
+    label: 配置
+  about:
+    label: 关于
+  quit: 退出

@@ -13,7 +13,7 @@ crate-type = ["staticlib", "cdylib", "rlib"]
 tauri-build = { version = "2", features = [] }
 
 [dependencies]
-tauri = { version = "2", features = [] }
+tauri = { version = "2", features = ["tray-icon"] }
 tauri-plugin-opener = "2"
 tauri-plugin-single-instance = "2.4.1"
 serde = { version = "1", features = ["derive"] }
@@ -24,3 +24,10 @@ tauri-plugin-log = "2.8.0"
 lazy_static = "1.5.0"
 rusqlite = "0.39.0"
 anyhow = "1.0.102"
+rust-i18n = "3.1.5"
+sys-locale = "0.3.2"
+
+[package.metadata.i18n]
+default-lang="zh-CN"
+langs= ["zh-CN", "en"]
+locales-path="i18n"

@@ -1,14 +1,23 @@
 pub mod database_manager;
+pub mod tray_icon_manager;
 
+use rust_i18n::t;
 use tauri::AppHandle;
-use tauri_plugin_log::log::LevelFilter;
+use tauri_plugin_log::log::{debug, error, info, LevelFilter};
 use tauri_plugin_log::{Target, TargetKind};
 use crate::common::database_manager::init_database;
+use crate::common::tray_icon_manager::init_tray_icon;
 
 /// 当前 common 模块的初始化
 pub fn init(app_handle: &AppHandle) -> tauri::Result<()> {
     init_log(app_handle)?;
-    init_database(app_handle)?;
+    let result = init_database(app_handle).and_then(|_| {
+        Ok(())
+    });
+    if result.is_err() {
+        info!("{}", result.unwrap_err());
+    }
+    init_tray_icon(app_handle)?;
     Ok(())
 }
 
