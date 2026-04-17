@@ -1,0 +1,6 @@
+node_modules/
+dist/
+.idea/
+src-tauri/target
+**/*.sqlite
+*.iml
