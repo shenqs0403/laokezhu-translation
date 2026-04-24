@@ -32,15 +32,21 @@ pub fn save_engine(engine: Engine) -> anyhow::Result<usize> {
     let i = conn.execute(SQL_UPDATE_BY_ENGINE_NAME, params![engine.enable,engine.url,engine.appid,engine.engine_key,engine.engine_name])?;
     if engine.enable {
         conn.execute(SQL_DISABLE_ALL, params![])?;
-        conn.execute(SQL_QUERY_BY_ENGINE_NAME, params![engine.engine_name])?;
+        conn.execute(SQL_ENABLE_BY_ENGINE_NAME, params![engine.engine_name])?;
     }
     Ok(i)
+}
+
+pub fn select_by_engine_name(engine_name: &str) -> anyhow::Result<Engine> {
+    let conn = DB_CONN.lock().unwrap();
+    conn.query_one(SQL_QUERY_BY_ENGINE_NAME, [engine_name],|row| row_to_engine(row))
+        .map_err(anyhow::Error::from)
 }
 
 pub fn select_enable_engine() -> anyhow::Result<Engine> {
     let conn = DB_CONN.lock().unwrap();
     conn.query_one(SQL_QUERY_BY_ENABLE,[],|row| row_to_engine(row))
-        .map_err(|r| anyhow::anyhow!("{:?}", r))
+        .map_err(anyhow::Error::from)
 }
 
 pub fn select_all_engine() -> anyhow::Result<Vec<Engine>> {

@@ -5,6 +5,7 @@ rust_i18n::i18n!("i18n");
 
 mod common;
 mod dao;
+mod translators;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {

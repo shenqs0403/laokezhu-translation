@@ -19,21 +19,21 @@ pub fn init() -> anyhow::Result<()> {
 /// 引擎持久化对象
 pub struct Engine {
     /// 引擎代码
-    engine_name: String,
+    pub engine_name: String,
     /// 请求url
-    url: String,
+    pub url: String,
     /// appid 各个引擎所需不一样，如果不需要则是空字符串
-    appid: String,
+    pub appid: String,
     /// 引擎的密钥，各个引擎所需不一样，如果不需要则是空字符串
-    engine_key: String,
+    pub engine_key: String,
     /// 是否启用，true-启用，false-停用
-    enable: bool,
+    pub enable: bool,
 }
 
 /// key-value存储对象
 pub struct KeyValue {
     /// key主键，唯一，非空
-    key: String,
+    pub key: String,
     /// 值
-    value: String,
+    pub value: String,
 }
