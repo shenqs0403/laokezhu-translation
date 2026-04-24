@@ -63,9 +63,10 @@ pub fn select_all_engine() -> anyhow::Result<Vec<Engine>> {
 fn row_to_engine(row: &rusqlite::Row) -> rusqlite::Result<Engine> {
     Ok(Engine{
         engine_name: row.get(0)?,
-        url: row.get(1)?,
-        appid: row.get(2)?,
-        engine_key: row.get(3)?,
-        enable: row.get(4)?,
+        engine_zh_name: row.get(1)?,
+        url: row.get(2)?,
+        appid: row.get(3)?,
+        engine_key: row.get(4)?,
+        enable: row.get(5)?,
     })
 }

@@ -1,5 +1,6 @@
 use std::sync::Mutex;
 use lazy_static::lazy_static;
+use serde::{Deserialize, Serialize};
 use crate::dao::engine_dao::create_engine_table_and_init_data;
 use crate::dao::key_value_dao::create_key_value_table_and_init_data;
 
@@ -16,10 +17,13 @@ pub fn init() -> anyhow::Result<()> {
     Ok(())
 }
 
+#[derive(Serialize,Deserialize,Debug,Default,Clone)]
 /// 引擎持久化对象
 pub struct Engine {
     /// 引擎代码
     pub engine_name: String,
+    // 引擎中文名称
+    pub engine_zh_name: String,
     /// 请求url
     pub url: String,
     /// appid 各个引擎所需不一样，如果不需要则是空字符串
@@ -31,6 +35,7 @@ pub struct Engine {
 }
 
 /// key-value存储对象
+#[derive(Serialize,Deserialize,Debug,Default,Clone)]
 pub struct KeyValue {
     /// key主键，唯一，非空
     pub key: String,

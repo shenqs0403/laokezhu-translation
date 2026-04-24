@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "identifier": "com.github.laokezhu.translation",
   "build": {
-    "beforeDevCommand": "npm run dev",
+    "beforeDevCommand": "",
     "devUrl": "http://localhost:1420",
     "beforeBuildCommand": "npm run build",
     "frontendDist": "../dist"
@@ -19,7 +19,8 @@
         "label": "config",
         "width": 400,
         "height": 700,
-        "create": false
+        "create": true,
+        "url": "/index.html/#/config"
       },
       {
         "label": "about",
