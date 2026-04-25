@@ -9,8 +9,11 @@
                      @blur="saveShortcut"/>
           </n-form-item>
           <n-form-item label="划词">
-            <n-switch v-model:value="basic.swipe"/>
+            <n-switch v-model:value="basic.swipe" @update:value="saveSwipe"/>
           </n-form-item>
+          <n-alert type="warning" :show-icon="false">
+            快捷键和划词在Linux Wayland 环境无效，具体请看“关于”界面说明
+          </n-alert>
         </n-form>
       </n-tab-pane>
       <n-tab-pane name="引擎配置">
@@ -37,6 +40,9 @@ import {basic} from "../components/Config.ts";
 import {engines, loadAllEngines} from "../components/Common.ts";
 import {onMounted} from "vue";
 import {invoke} from "@tauri-apps/api/core";
+import {useMessage} from "naive-ui";
+
+let message = useMessage();
 
 // 快捷键的数组
 let shortcutKeyArray:string[] = [];
@@ -56,11 +62,24 @@ const saveShortcut = () => {
   shortcutKeyArray = [];
   console.log(basic.value.shortcut)
   invoke<any>("save_key_value",{key: "basic.shortcut",value: basic.value.shortcut})
-      .catch(e => "");
+      .then(() => message.success("保存成功"))
+      .catch(e => message.error(e));
+}
+
+const saveSwipe = () => {
+  invoke("save_key_value",{key: "basic.swipe",value: basic.value.swipe +""})
+      .then(() => message.success("保存成功"))
+      .catch(e => message.error(e));
 }
 
 onMounted(() => {
   loadAllEngines();
+  invoke<string>("get_key_value",{key: "basic.swipe"})
+      .then(value => basic.value.swipe = value == "true")
+      .catch(e => message.error(e));
+  invoke<string>("get_key_value",{key: "basic.shortcut"})
+      .then(value => basic.value.shortcut = value)
+      .catch(e => message.error(e));
 })
 
 </script>
