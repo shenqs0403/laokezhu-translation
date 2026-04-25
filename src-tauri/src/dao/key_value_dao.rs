@@ -9,12 +9,12 @@ pub fn create_key_value_table_and_init_data() -> anyhow::Result<()> {
     let create = r#"create table key_value
         (
             config_key text primary key ,
-            config_value any not null
+            config_value text not null
         )"#;
     let conn = DB_CONN.lock().unwrap();
     conn.execute(create, [])?;
-    conn.execute(SQL_INSERT_OR_UPDATE,["shortcut","Alt+ContrlLeft+KeyQ"])?;
-    conn.execute(SQL_INSERT_OR_UPDATE,params!["swipe",false])?;
+    conn.execute(SQL_INSERT_OR_UPDATE,["basic.shortcut","Alt+ContrlLeft+KeyQ"])?;
+    conn.execute(SQL_INSERT_OR_UPDATE,params!["basic.swipe",false])?;
     Ok(())
 }
 

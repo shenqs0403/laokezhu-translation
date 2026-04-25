@@ -8,7 +8,7 @@ pub mod engine_dao;
 pub mod key_value_dao;
 
 lazy_static! {
-    pub static ref DB_CONN: Mutex<rusqlite::Connection> = Mutex::new(rusqlite::Connection::open("laokezhu.sqlite").unwrap());
+    pub static ref DB_CONN: Mutex<rusqlite::Connection> = Mutex::new(rusqlite::Connection::open("translate.sqlite").unwrap());
 }
 
 pub fn init() -> anyhow::Result<()> {

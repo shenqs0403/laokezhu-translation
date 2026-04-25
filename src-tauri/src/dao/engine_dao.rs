@@ -23,8 +23,8 @@ pub fn create_engine_table_and_init_data() -> anyhow::Result<()> {
         )"#;
     let conn = DB_CONN.lock().unwrap();
     conn.execute(create,[])?;
-    conn.execute(insert,params!["baidu","百度","","","",false])?;
-    conn.execute(insert,params!["youdao","有道","","","",false])?;
+    conn.execute(insert,params!["baidu","百度","https://fanyi-api.baidu.com/api/trans/vip/translate","","",false])?;
+    conn.execute(insert,params!["youdao","有道","https://openapi.youdao.com/api","","",false])?;
     Ok(())
 }
 
