@@ -1,9 +1,10 @@
 use rusqlite::fallible_iterator::FallibleIterator;
 use rusqlite::params;
+use tauri_plugin_log::log::debug;
 use crate::dao::{Engine, DB_CONN};
 static SQL_UPDATE_BY_ENGINE_NAME: &str = "update engine set enable = ?1,url = ?2,appid = ?3,engine_key = ?4 where engine_name = ?5";
 static SQL_DISABLE_ALL: &str = "update engine set enable = false";
-static SQL_ENABLE_BY_ENGINE_NAME: &str = "update engine set enable = ?1 where engine_name = ?2";
+static SQL_ENABLE_BY_ENGINE_NAME: &str = "update engine set enable = 1 where engine_name = ?1";
 static SQL_QUERY_BY_ENGINE_NAME: &str = "select * from engine where engine_name = ?";
 static SQL_QUERY_BY_ENABLE: &str = "select * from engine where enable = ?1";
 static SQL_QUERY_ALL: &str = "select * from engine ";
@@ -30,9 +31,12 @@ pub fn create_engine_table_and_init_data() -> anyhow::Result<()> {
 pub fn save_engine(engine: Engine) -> anyhow::Result<usize> {
     let conn = DB_CONN.lock().unwrap();
     let i = conn.execute(SQL_UPDATE_BY_ENGINE_NAME, params![engine.enable,engine.url,engine.appid,engine.engine_key,engine.engine_name])?;
+    debug!("修改引擎成功{}",i);
     if engine.enable {
         conn.execute(SQL_DISABLE_ALL, params![])?;
+        debug!("禁用所有引擎完成");
         conn.execute(SQL_ENABLE_BY_ENGINE_NAME, params![engine.engine_name])?;
+        debug!("启用 {} 引擎完成",engine.engine_name)
     }
     Ok(i)
 }

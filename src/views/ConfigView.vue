@@ -17,18 +17,24 @@
         </n-form>
       </n-tab-pane>
       <n-tab-pane name="引擎配置">
-        <n-select :options="engines"></n-select>
+        <n-select v-model:value="currentEngine.engine_name"
+                  :options="engines"
+                  @update:value="engineSelectChangeHandler"
+        />
         <n-form style="margin-top: 10px">
           <n-form-item label="url">
-            <n-input/>
+            <n-input v-model:value="currentEngine.url"/>
           </n-form-item>
           <n-form-item label="appid">
-            <n-input/>
+            <n-input v-model:value="currentEngine.appid"/>
           </n-form-item>
           <n-form-item label="密钥">
-            <n-input/>
+            <n-input v-model:value="currentEngine.engine_key"/>
           </n-form-item>
-          <n-button type="primary" block>保存</n-button>
+          <n-form-item label="是否启用">
+            <n-switch v-model:value="currentEngine.enable"/>
+          </n-form-item>
+          <n-button type="primary" block @click="saveEngine">保存</n-button>
         </n-form>
       </n-tab-pane>
     </n-tabs>
@@ -36,7 +42,7 @@
 </template>
 <script setup lang="ts">
 
-import {basic} from "../components/Config.ts";
+import {basic, currentEngine} from "../components/Config.ts";
 import {engines, loadAllEngines} from "../components/Common.ts";
 import {onMounted} from "vue";
 import {invoke} from "@tauri-apps/api/core";
@@ -45,10 +51,10 @@ import {useMessage} from "naive-ui";
 let message = useMessage();
 
 // 快捷键的数组
-let shortcutKeyArray:string[] = [];
+let shortcutKeyArray: string[] = [];
 
 const loadShortcut = (event: KeyboardEvent) => {
-  console.log(shortcutKeyArray,"   ",shortcutKeyArray.indexOf(event.code),"   ",event.code)
+  console.log(shortcutKeyArray, "   ", shortcutKeyArray.indexOf(event.code), "   ", event.code)
   if (shortcutKeyArray.indexOf(event.code) < 0) {
     shortcutKeyArray.push(event.code);
     shortcutKeyArray.sort();
@@ -61,23 +67,41 @@ const loadShortcut = (event: KeyboardEvent) => {
 const saveShortcut = () => {
   shortcutKeyArray = [];
   console.log(basic.value.shortcut)
-  invoke<any>("save_key_value",{key: "basic.shortcut",value: basic.value.shortcut})
+  invoke<any>("save_key_value", {key: "basic.shortcut", value: basic.value.shortcut})
       .then(() => message.success("保存成功"))
       .catch(e => message.error(e));
 }
 
 const saveSwipe = () => {
-  invoke("save_key_value",{key: "basic.swipe",value: basic.value.swipe +""})
+  invoke("save_key_value", {key: "basic.swipe", value: basic.value.swipe + ""})
       .then(() => message.success("保存成功"))
+      .catch(e => message.error(e));
+}
+
+const engineSelectChangeHandler = (val: string) => {
+  engines.value?.forEach((item) => {
+    if (item.engine_name == val) {
+      currentEngine.value = item;
+      console.log(currentEngine.value);
+    }
+  })
+}
+
+const saveEngine = () => {
+  invoke<number>("save_engine", {engine: currentEngine.value})
+      .then(i => {
+        message.success(i > 0 ? "保存成功" : "保存失败");
+        loadAllEngines();
+      })
       .catch(e => message.error(e));
 }
 
 onMounted(() => {
   loadAllEngines();
-  invoke<string>("get_key_value",{key: "basic.swipe"})
+  invoke<string>("get_key_value", {key: "basic.swipe"})
       .then(value => basic.value.swipe = value == "true")
       .catch(e => message.error(e));
-  invoke<string>("get_key_value",{key: "basic.shortcut"})
+  invoke<string>("get_key_value", {key: "basic.shortcut"})
       .then(value => basic.value.shortcut = value)
       .catch(e => message.error(e));
 })

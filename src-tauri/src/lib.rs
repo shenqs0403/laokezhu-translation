@@ -4,7 +4,7 @@ mod translators;
 mod commands;
 
 use tauri_plugin_log::log::{debug, warn};
-use commands::{ get_all_engines,save_key_value,get_key_value };
+use commands::{ get_all_engines,save_key_value,get_key_value,save_engine};
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
@@ -24,7 +24,7 @@ pub fn run() {
 
         ))
         .plugin(tauri_plugin_opener::init())
-        .invoke_handler(tauri::generate_handler![get_all_engines,save_key_value,get_key_value])
+        .invoke_handler(tauri::generate_handler![get_all_engines,save_key_value,get_key_value,save_engine])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
