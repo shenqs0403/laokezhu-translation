@@ -1,3 +1,5 @@
+pub mod windows_manager;
+
 use arboard::{Clipboard, GetExtLinux, LinuxClipboardKind};
 use rdev::{EventType, Key};
 use tauri::AppHandle;
