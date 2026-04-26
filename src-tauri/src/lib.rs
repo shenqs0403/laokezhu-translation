@@ -3,8 +3,9 @@ mod dao;
 mod translators;
 mod commands;
 
-use tauri_plugin_log::log::{debug, warn};
+use tauri_plugin_log::log::{debug, error, warn};
 use commands::{ get_all_engines,save_key_value,get_key_value,save_engine};
+use crate::common::windows_manager::{create_or_show, set_position, LABEL_TRANSLATE};
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
@@ -21,9 +22,15 @@ pub fn run() {
             common::global_event_handler::register_global_shortcut(app_handler)?;
             Ok(())
         })
-        .plugin(tauri_plugin_single_instance::init(|_app_handler, _args, _cwd| {}
-
-        ))
+        .plugin(tauri_plugin_single_instance::init(|app_handler, args, _cwd| {
+            if args.contains(&"translation".to_string()) {
+                create_or_show(app_handler, LABEL_TRANSLATE).and_then(|w| {
+                    set_position(app_handler,&w,app_handler.cursor_position()?)
+                }).unwrap_or_else(|e| {
+                    error!("打开翻译窗口异常：{}",e)
+                });
+            }
+        }))
         .plugin(tauri_plugin_opener::init())
         .invoke_handler(tauri::generate_handler![get_all_engines,save_key_value,get_key_value,save_engine])
         .run(tauri::generate_context!())
