@@ -19,8 +19,16 @@
         "label": "config",
         "width": 400,
         "height": 700,
-        "create": true,
+        "create": false,
         "url": "/index.html/#/config"
+      },
+      {
+        "label": "translate",
+        "title": "按ESC键关闭",
+        "width": 400,
+        "height": 400,
+        "create": true,
+        "url": "/index.html/#/transalte"
       },
       {
         "label": "about",

@@ -23,7 +23,7 @@ pub fn run() {
             Ok(())
         })
         .plugin(tauri_plugin_single_instance::init(|app_handler, args, _cwd| {
-            if args.contains(&"translation".to_string()) {
+            if args.contains(&"translate".to_string()) {
                 create_or_show(app_handler, LABEL_TRANSLATE).and_then(|w| {
                     set_position(app_handler,&w,app_handler.cursor_position()?)
                 }).unwrap_or_else(|e| {

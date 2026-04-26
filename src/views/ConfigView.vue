@@ -64,9 +64,7 @@ const loadShortcut = (event: KeyboardEvent) => {
     shortcutKeyArray.push(event.code);
     shortcutKeyArray.sort();
   }
-  basic.value.shortcut = shortcutKeyArray.join("+")
-      .replace("AltLeft", "Alt")
-      .replace("AltRight", "AltGr");
+  basic.value.shortcut = shortcutKeyArray.join("+");
 }
 
 const saveShortcut = () => {
