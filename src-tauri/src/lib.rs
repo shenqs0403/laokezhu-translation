@@ -4,7 +4,7 @@ mod translators;
 mod commands;
 
 use tauri_plugin_log::log::{debug, error, warn};
-use commands::{ get_all_engines,save_key_value,get_key_value,save_engine};
+use commands::{ get_all_engines,save_key_value,get_key_value,save_engine,is_wayland};
 use crate::common::windows_manager::{create_or_show, set_position, LABEL_TRANSLATE};
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
@@ -32,7 +32,7 @@ pub fn run() {
             }
         }))
         .plugin(tauri_plugin_opener::init())
-        .invoke_handler(tauri::generate_handler![get_all_engines,save_key_value,get_key_value,save_engine])
+        .invoke_handler(tauri::generate_handler![get_all_engines,save_key_value,get_key_value,save_engine,is_wayland])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

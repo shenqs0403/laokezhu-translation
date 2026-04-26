@@ -1,9 +1,15 @@
+use std::env;
 use crate::dao::engine_dao::select_all_engine;
 use crate::dao::{Engine};
 use tauri::command;
 use tauri_plugin_log::log::debug;
 use crate::dao;
 use crate::dao::key_value_dao::{get_item, set_item};
+
+#[command]
+pub fn is_wayland() -> tauri::Result<bool> {
+    Ok(env::var("XDG_SESSION_TYPE").is_ok())
+}
 
 #[command]
 pub fn get_all_engines() -> tauri::Result<Vec<Engine>> {

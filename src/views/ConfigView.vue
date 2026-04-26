@@ -5,14 +5,17 @@
         <n-form label-width="auto">
           <n-form-item label="快捷键">
             <n-input v-model:value="basic.shortcut"
+                     :disabled="isWayland"
                      @keydown="loadShortcut"
                      @blur="saveShortcut"/>
           </n-form-item>
           <n-form-item label="划词">
-            <n-switch v-model:value="basic.swipe" @update:value="saveSwipe"/>
+            <n-switch v-model:value="basic.swipe"
+                      :disabled="isWayland"
+                      @update:value="saveSwipe"/>
           </n-form-item>
-          <n-alert type="warning" :show-icon="false">
-            快捷键和划词在Linux Wayland 环境无效，具体请看“关于”界面说明
+          <n-alert type="warning" :show-icon="false" v-show="isWayland">
+            Linux Wayland 环境本界面配置无效，具体请看“关于”界面说明
           </n-alert>
         </n-form>
       </n-tab-pane>
@@ -44,7 +47,7 @@
 
 import {basic, currentEngine} from "../components/Config.ts";
 import {engines, loadAllEngines} from "../components/Common.ts";
-import {onMounted} from "vue";
+import {onMounted, ref} from "vue";
 import {invoke} from "@tauri-apps/api/core";
 import {useMessage} from "naive-ui";
 
@@ -52,6 +55,8 @@ let message = useMessage();
 
 // 快捷键的数组
 let shortcutKeyArray: string[] = [];
+// 是否是Wayland,如果是禁用快捷键、swipe
+const isWayland = ref(false);
 
 const loadShortcut = (event: KeyboardEvent) => {
   console.log(shortcutKeyArray, "   ", shortcutKeyArray.indexOf(event.code), "   ", event.code)
@@ -97,6 +102,11 @@ const saveEngine = () => {
 }
 
 onMounted(() => {
+  console.log(navigator.userAgent);
+  invoke<boolean>("is_wayland").then(value => {
+    isWayland.value = value;
+  })
+
   loadAllEngines();
   invoke<string>("get_key_value", {key: "basic.swipe"})
       .then(value => basic.value.swipe = value == "true")
