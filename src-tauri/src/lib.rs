@@ -10,14 +10,15 @@ use commands::{ get_all_engines,save_key_value,get_key_value,save_engine};
 pub fn run() {
     tauri::Builder::default()
         .setup(|app| {
-            common::init(app.handle())?;
+            let app_handler = app.handle();
+            common::init(app_handler)?;
             dao::init().and_then(|t| {
                 debug!("首次运行");
                 Ok(())
             }).unwrap_or_else(|e| {
-                warn!("数据库初始化出了点文件，如果是表已经存在问题则忽律");
-                ()
+                warn!("数据库初始化出了点文件，如果是表已经存在问题则忽律")
             });
+            common::global_event_handler::register_global_shortcut(app_handler)?;
             Ok(())
         })
         .plugin(tauri_plugin_single_instance::init(|_app_handler, _args, _cwd| {}

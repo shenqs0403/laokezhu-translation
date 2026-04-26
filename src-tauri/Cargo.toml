@@ -27,6 +27,9 @@ anyhow = "1.0.102"
 rust-i18n = "3.1.5"
 sys-locale = "0.3.2"
 
+#[target.'cfg(any(target_os="windows",target_os="macos"))'.dependencies]
+tauri-plugin-global-shortcut = "2.3.1"
+
 [package.metadata.i18n]
 default-lang="zh-CN"
 langs= ["zh-CN", "en"]

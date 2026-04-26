@@ -1,6 +1,9 @@
 use rusqlite::params;
 use crate::dao::{KeyValue, DB_CONN};
 
+pub static KEY_SHORTCUT: &str = "basic.shortcut";
+pub static KEY_SWIPE: &str = "basic.swipe";
+
 // keyValue操作
 static SQL_INSERT_OR_UPDATE: &str = "insert or replace into  key_value (config_key, config_value) values (?1,?2)";
 static QUERY_ONE: &str = "select * from key_value where config_key = ?1";
@@ -13,8 +16,8 @@ pub fn create_key_value_table_and_init_data() -> anyhow::Result<()> {
         )"#;
     let conn = DB_CONN.lock().unwrap();
     conn.execute(create, [])?;
-    conn.execute(SQL_INSERT_OR_UPDATE,["basic.shortcut","Alt+ContrlLeft+KeyQ"])?;
-    conn.execute(SQL_INSERT_OR_UPDATE,params!["basic.swipe",false])?;
+    conn.execute(SQL_INSERT_OR_UPDATE,[KEY_SHORTCUT,"Alt+ContrlLeft+KeyQ"])?;
+    conn.execute(SQL_INSERT_OR_UPDATE,params![KEY_SWIPE,false])?;
     Ok(())
 }
 

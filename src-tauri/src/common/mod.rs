@@ -1,4 +1,5 @@
 pub mod windows_manager;
+pub mod global_event_handler;
 
 use arboard::{Clipboard, GetExtLinux, LinuxClipboardKind};
 use rdev::{EventType, Key};
