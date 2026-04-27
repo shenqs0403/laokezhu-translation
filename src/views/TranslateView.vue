@@ -2,44 +2,71 @@
 import {onMounted, ref} from "vue";
 import {invoke} from "@tauri-apps/api/core";
 import {getCurrentWindow} from "@tauri-apps/api/window";
-import {Engine, loadAllEngines} from "../components/Common.ts";
+import {engines, loadAllEngines} from "../components/Common.ts";
+import {LanguageOption, languages} from "../components/Translate.ts";
 
-var currentEngine: Engine = {appid: "", enable: false, engine_key: "", engine_name: "", engine_zh_name: "", url: ""};
+const currentEngineName = ref("");
 const targetText = ref("");
+const distLang = ref("");
+const languageOptions = ref<LanguageOption[]>([]);
 
 const showResult = (res: string) => {
   let json = JSON.parse(res);
-  if (currentEngine.engine_name == "baidu") {
+  if (currentEngineName.value == "baidu") {
     targetText.value = json.trans_result.map((item: any) => item.dst).join("  ");
+    distLang.value = json.to;
   }
+}
+
+const startTranslate = () => {
+  invoke<string>("translate_selected_text",{engineName: currentEngineName.value,lang: distLang.value}).then(val => {
+    console.log(val);
+    showResult(val)
+  }).catch(e => alert(e));
 }
 
 onMounted(() => {
   let currentWindow = getCurrentWindow();
-  currentWindow.once("tauri://blur",() => {
-    currentWindow.close();
-  });
+  // currentWindow.once("tauri://blur",() => {
+  //   currentWindow.close();
+  // });
 
   loadAllEngines().then(engineArr => {
     engineArr.forEach(item => {
       console.log(item,"    ",item.enable)
       if (item.enable) {
-        currentEngine = item;
+        currentEngineName.value = item.engine_name;
+        languageOptions.value = languages[currentEngineName.value];
       }
     })
   })
 
-  invoke<string>("translate_selected_text",{engineName: "",lang: ""}).then(val => {
-    console.log(val);
-    showResult(val)
-  }).catch(e => alert(e));
+  startTranslate();
 })
 </script>
 
 <template>
-{{ targetText }}
+  <div style="padding: 10px">
+    <n-form inline label-placement="left">
+      <n-form-item label="目标语言">
+        <n-select v-model:value="distLang"
+                  :options="languageOptions"
+                  @update:value="startTranslate"
+                  style="width: 100px"/>
+      </n-form-item>
+      <n-form-item label="翻译引擎">
+        <n-select v-model:value="currentEngineName"
+                  :options="engines"
+                  @update:value="startTranslate"
+                  style="width: 100px"/>
+      </n-form-item>
+    </n-form>
+    {{targetText}}
+  </div>
 </template>
 
 <style scoped>
-
+#app .n-form--inline .n-form-item-blank {
+  width: 100px;
+}
 </style>
