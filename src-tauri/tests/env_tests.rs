@@ -1,4 +1,5 @@
 use std::env;
+use sha2::Digest;
 
 #[test]
 pub fn test_env() {
@@ -17,4 +18,11 @@ pub fn test_baidu() {
 pub fn test_md5 () {
     let digest = md5::compute("aa");
     println!("{:?} {}", digest, hex::encode(digest.0));
+}
+
+#[test]
+pub fn test_sha2 () {
+    let array = sha2::Sha256::digest("aa");
+    let string = hex::encode(array);
+    println!("{:?} {:?}", string, array);
 }
