@@ -9,13 +9,13 @@
                      @keydown="loadShortcut"
                      @blur="saveShortcut"/>
           </n-form-item>
-          <n-form-item label="划词">
-            <n-switch v-model:value="basic.swipe"
-                      :disabled="isWayland"
-                      @update:value="saveSwipe"/>
+          <n-form-item label="划词等待时间（毫秒）">
+            <n-input v-model:value="basic.swipe"
+              @blur="saveSwipe"
+            />
           </n-form-item>
           <n-alert type="warning" :show-icon="false" v-show="isWayland">
-            Linux Wayland 环境本界面配置无效，具体请看“关于”界面说明
+            划词等待时间：是选中文本后 N 毫秒后显示菜单
           </n-alert>
         </n-form>
       </n-tab-pane>

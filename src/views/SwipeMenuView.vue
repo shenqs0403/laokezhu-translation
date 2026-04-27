@@ -11,7 +11,9 @@ onMounted(() => {
 })
 
 const openTranslateWindow = () => {
-  invoke("open_translate_window").catch(e => alert(e));
+  invoke("open_translate_window")
+      .then(() => getCurrentWindow().close())
+      .catch(e => alert(e));
 }
 
 </script>

@@ -5,21 +5,14 @@ use crate::dao::{Engine};
 use tauri::{command, AppHandle, Manager};
 use tauri_plugin_log::log::{debug, error};
 use crate::common::windows_manager::{create_or_show, set_position, LABEL_MENU, LABEL_TRANSLATE};
-use crate::dao;
-use crate::dao::key_value_dao::{get_item, set_item};
+use crate::{common, dao};
+use crate::dao::key_value_dao::{get_item, set_item, KEY_SWIPE};
 use crate::translators::start_translation;
 
 /// 划词菜单点击翻译专门提供的方法
 #[command]
 pub fn open_translate_window(app_handle: AppHandle) -> tauri::Result<()> {
-    // 关闭划词菜单
-    let option = app_handle.get_webview_window(LABEL_MENU);
-    if let Some (win) = option {
-        win.close()?;
-    }
     let window = create_or_show(&app_handle, LABEL_TRANSLATE)?;
-    window.show()?;
-    window.set_focus()?;
     set_position(&window,app_handle.cursor_position()?)?;
     Ok(())
 }
@@ -51,7 +44,8 @@ pub fn save_engine(engine: Engine) -> tauri::Result<usize> {
 
 #[command]
 pub fn save_key_value(key: String, value: String) -> tauri::Result<()> {
-    set_item(key, value)?;
+    set_item(key, value.clone())?;
+    common::global_event_handler::load_swipe_time_from_db()?;
     Ok(())
 }
 

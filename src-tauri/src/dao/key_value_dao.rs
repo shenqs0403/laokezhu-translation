@@ -17,7 +17,7 @@ pub fn create_key_value_table_and_init_data() -> anyhow::Result<()> {
     let conn = DB_CONN.lock().unwrap();
     conn.execute(create, [])?;
     conn.execute(SQL_INSERT_OR_UPDATE,[KEY_SHORTCUT,"Alt+Control+KeyQ"])?;
-    conn.execute(SQL_INSERT_OR_UPDATE,params![KEY_SWIPE,false])?;
+    conn.execute(SQL_INSERT_OR_UPDATE,params![KEY_SWIPE,300])?;
     Ok(())
 }
 

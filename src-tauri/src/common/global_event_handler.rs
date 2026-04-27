@@ -1,56 +1,48 @@
 use crate::commands::get_key_value;
-use crate::common::windows_manager::{close_window, create_or_show, set_position, LABEL_MENU, LABEL_TRANSLATE};
-use crate::dao::key_value_dao::KEY_SHORTCUT;
-use rdev::{Button, EventType};
+use crate::common::windows_manager::{create_or_show, set_position, LABEL_MENU, LABEL_TRANSLATE};
+use crate::dao::key_value_dao::{get_item, set_item, KEY_SHORTCUT, KEY_SWIPE};
 use std::env;
-use tauri::{AppHandle, Manager, PhysicalPosition};
-use tauri_plugin_global_shortcut::{Code, Shortcut, ShortcutState};
+use std::sync::Mutex;
+use lazy_static::lazy_static;
+use tauri::{AppHandle};
+use tauri_plugin_global_shortcut::{Shortcut, ShortcutState};
 use tauri_plugin_log::log::{debug, error};
+use crate::common;
 
-#[derive(Default,Debug)]
-pub struct MousePosition {
-    pub start_x: f64,
-    pub start_y: f64,
-    pub real_x: f64,
-    pub real_y: f64,
-}
-impl MousePosition {
-    pub fn record_position(&mut self) {
-        self.start_x = self.real_x;
-        self.start_y = self.real_y;
-    }
+lazy_static! {
+    pub static ref READ_TEXT: Mutex<String> = Mutex::new(String::new());
+    static ref SWIPE_TIME: Mutex<u64> = Mutex::new(300);
+    static ref STOP_FLAG: Mutex<bool> = Mutex::new(false);
 }
 
 /// 注册全局鼠标事件，这个方法在Linux Wayland环境无效
 pub fn register_mouse_event(app_handle: &AppHandle) -> anyhow::Result<()> {
-    debug!("{:?}",env::var("XDG_SESSION_TYPE"));
-    if env::var("WAYLAND_DISPLAY").is_ok() {
-        error!("鼠标事件不支持Wayland");
-        return Ok(());
-    }
+    load_swipe_time_from_db()?;
     let handler = app_handle.clone();
-    std::thread::spawn(move || {
-        let mut pos = MousePosition::default();
-        rdev::listen(move |event| match event.event_type {
-            EventType::ButtonPress(Button::Left) => {
-                pos.record_position();
+    std::thread::spawn(move || -> anyhow::Result<()> {
+        while !get_stop_flag()? {
+            let i = get_swipe_time()?;
+            if i < 100 {
+                break;
             }
-            EventType::ButtonRelease(Button::Left) => {
-                if (pos.start_x - pos.real_x).abs() > 10.0
-                    || (pos.start_y - pos.real_y).abs() > 10.0
-                {
-                    let window = create_or_show(&handler, LABEL_MENU).unwrap();
-                    window.show().unwrap();
-                    window.set_focus().unwrap();
-                    set_position(&window,PhysicalPosition::new(pos.real_x, pos.real_y)).unwrap();
-                }
+            std::thread::sleep(std::time::Duration::from_millis(i));
+            let string = common::read_selected_text()?.trim().to_string();
+            debug!("读取剪切板内容：{}",string);
+            if string.is_empty() {
+                continue;
             }
-            EventType::MouseMove { x, y } => {
-                pos.real_x = x;
-                pos.real_y = y;
+
+            let x = !compare_text(&string);
+            debug!("比较结果：{}",x);
+            if !compare_text(&string) {
+                set_text(string)?;
+                let window = create_or_show(&handler, LABEL_MENU)?;
+                // window.set_always_on_top(true)?;
+                set_position(&window,handler.cursor_position()?)?;
             }
-            _ => {}
-        })
+        }
+        debug!("退出轮询");
+        Ok(())
     });
     Ok(())
 }
@@ -89,4 +81,39 @@ pub fn register_global_shortcut(app_handle: &AppHandle) -> anyhow::Result<()> {
 
 fn load_shortcut() -> anyhow::Result<String> {
     get_key_value(KEY_SHORTCUT.to_string()).map_err(anyhow::Error::from)
+}
+
+fn set_text(text: String) -> anyhow::Result<()> {
+    let mut guard = READ_TEXT.lock().unwrap();
+    debug!("设置前：{}",&guard);
+    *guard = text;
+    debug!("设置后：{}",&guard);
+    Ok(())
+}
+
+pub fn set_swipe_time(time: u64) -> anyhow::Result<()> {
+    let mut guard = SWIPE_TIME.lock().unwrap();
+    *guard = time;
+    Ok(())
+}
+
+fn get_swipe_time() -> anyhow::Result<u64> {
+    let mut guard = SWIPE_TIME.lock().unwrap();
+    Ok(*guard)
+}
+
+pub fn load_swipe_time_from_db() -> anyhow::Result<u64> {
+    let i = get_item(KEY_SWIPE.to_string())?.value.parse::<u64>()?;
+    let mut guard = SWIPE_TIME.lock().unwrap();
+    *guard = i;
+    Ok(i)
+}
+
+/// 减小lock的范围
+fn compare_text(new_str: &str) -> bool {
+    READ_TEXT.lock().unwrap().as_str() == new_str
+}
+
+fn get_stop_flag() -> anyhow::Result<bool> {
+    Ok(STOP_FLAG.lock().unwrap().clone())
 }
