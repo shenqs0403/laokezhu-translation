@@ -38,9 +38,9 @@ const startTranslate = () => {
 
 onMounted(() => {
   let currentWindow = getCurrentWindow();
-  // currentWindow.once("tauri://blur",() => {
-  //   currentWindow.close();
-  // });
+  currentWindow.once("tauri://blur",() => {
+    currentWindow.close();
+  });
 
   loadAllEngines().then(engineArr => {
     engineArr.forEach(item => {

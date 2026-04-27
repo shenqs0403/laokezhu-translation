@@ -31,6 +31,18 @@
         "url": "/index.html/#/translate"
       },
       {
+        "label": "menu",
+        "width": 120,
+        "height": 40,
+        "create": false,
+        "url": "/index.html/#/menu",
+        "resizable": false,
+        "transparent": true,
+        "shadow": false,
+        "skipTaskbar": true,
+        "decorations": false
+      },
+      {
         "label": "about",
         "width": 400,
         "height": 700,
