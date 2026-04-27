@@ -24,10 +24,10 @@
       },
       {
         "label": "translate",
-        "title": "按ESC键关闭",
+        "title": "失去焦点自动关闭",
         "width": 400,
         "height": 400,
-        "create": true,
+        "create": false,
         "url": "/index.html/#/translate"
       },
       {

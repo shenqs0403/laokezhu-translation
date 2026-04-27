@@ -20,6 +20,7 @@ pub fn run() {
                 warn!("数据库初始化出了点文件，如果是表已经存在问题则忽律")
             });
             common::global_event_handler::register_global_shortcut(app_handler)?;
+            common::tray_manager::init(app_handler)?;
             Ok(())
         })
         .plugin(tauri_plugin_single_instance::init(|app_handler, args, _cwd| {

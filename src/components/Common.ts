@@ -16,16 +16,18 @@ export interface Engine {
     value?: string
 }
 
-export const engines = ref<Engine[]>();
+export const engines = ref<Engine[]>([]);
 
-export const loadAllEngines = () => {
-  invoke<Engine[]>("get_all_engines").then(value => {
-      console.log("加载引擎列表返回：",value)
-      value.forEach(v => {
-          v.label = v.engine_zh_name;
-          v.value = v.engine_name;
-      })
-      engines.value = value;
-      console.log("设置的引擎对象：",engines.value)
-  })
+export const loadAllEngines = (): Promise<Engine[]> => {
+    return new Promise<Engine[]>(resolve => {
+        invoke<Engine[]>("get_all_engines").then(value => {
+            console.log("加载引擎列表返回：",value)
+            value.forEach(v => {
+                v.label = v.engine_zh_name;
+                v.value = v.engine_name;
+            })
+            engines.value = value;
+            resolve(engines.value);
+        })
+    })
 }
