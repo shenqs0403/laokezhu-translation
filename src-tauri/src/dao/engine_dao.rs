@@ -5,8 +5,8 @@ use crate::dao::{Engine, DB_CONN};
 static SQL_UPDATE_BY_ENGINE_NAME: &str = "update engine set enable = ?1,url = ?2,appid = ?3,engine_key = ?4 where engine_name = ?5";
 static SQL_DISABLE_ALL: &str = "update engine set enable = false";
 static SQL_ENABLE_BY_ENGINE_NAME: &str = "update engine set enable = 1 where engine_name = ?1";
-static SQL_QUERY_BY_ENGINE_NAME: &str = "select * from engine where engine_name = ?";
-static SQL_QUERY_BY_ENABLE: &str = "select * from engine where enable = ?1";
+static SQL_QUERY_BY_ENGINE_NAME: &str = "select * from engine where engine_name = ?1";
+static SQL_QUERY_BY_ENABLE: &str = "select * from engine where enable = 1";
 static SQL_QUERY_ALL: &str = "select * from engine ";
 
 /// 创建数据库表并初始化数据

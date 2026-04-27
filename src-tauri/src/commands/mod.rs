@@ -2,9 +2,17 @@ use std::env;
 use crate::dao::engine_dao::select_all_engine;
 use crate::dao::{Engine};
 use tauri::command;
-use tauri_plugin_log::log::debug;
+use tauri_plugin_log::log::{debug, error};
 use crate::dao;
 use crate::dao::key_value_dao::{get_item, set_item};
+use crate::translators::start_translation;
+
+#[command]
+pub async fn translate_selected_text(engine_name: String,lang: String) -> tauri::Result<String> {
+    debug!("接收参数：{}  {}",engine_name,lang);
+    let result_str = start_translation(engine_name, lang).await?;
+    Ok(result_str)
+}
 
 #[command]
 pub fn is_wayland() -> tauri::Result<bool> {

@@ -12,3 +12,9 @@ pub fn test_baidu() {
     let x = string.split("_").next().unwrap();
     println!("{:?}", x);
 }
+
+#[test]
+pub fn test_md5 () {
+    let digest = md5::compute("aa");
+    println!("{:?} {}", digest, hex::encode(digest.0));
+}

@@ -3,7 +3,7 @@ use crate::translators::Translator;
 
 pub struct YoudaoTranslator {}
 impl YoudaoTranslator{
-    pub fn new(engine: Engine) -> YoudaoTranslator {
+    pub fn new(engine: Engine, lang: String) -> YoudaoTranslator {
         YoudaoTranslator{}
     }
 }
