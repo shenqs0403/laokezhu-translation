@@ -1,14 +1,11 @@
 use std::env;
-use std::env::var;
-use anyhow::anyhow;
 use crate::dao::engine_dao::select_all_engine;
 use crate::dao::{Engine};
-use tauri::{command, AppHandle, Manager};
-use tauri_plugin_log::log::{debug, error};
-use crate::common::windows_manager::{create_or_show, set_position, LABEL_MENU, LABEL_TRANSLATE};
-use crate::{common, dao};
-use crate::common::global_event_handler::restart_shortcut_handler;
-use crate::dao::key_value_dao::{get_item, set_item, KEY_SHORTCUT, KEY_SWIPE};
+use tauri::{command, AppHandle};
+use tauri_plugin_log::log::{debug};
+use crate::common::windows_manager::{create_or_show, set_position, LABEL_TRANSLATE};
+use crate::{dao};
+use crate::dao::key_value_dao::{get_item, set_item};
 use crate::translators::start_translation;
 
 /// 划词菜单点击翻译专门提供的方法
@@ -39,15 +36,15 @@ pub fn get_all_engines() -> tauri::Result<Vec<Engine>> {
 
 #[command]
 pub fn save_engine(engine: Engine) -> tauri::Result<usize> {
-    debug!("修改引擎：{:?}",engine);
     let i = dao::engine_dao::save_engine(engine)?;
     Ok(i)
 }
 
 #[command]
+#[cfg(any(target_os = "windows", target_os = "macos"))]
 pub fn update_shortcut(app_handle: AppHandle,value: String) -> tauri::Result<()> {
+    common::global_event_handler::restart_shortcut_handler(app_handle)?;
     set_item(KEY_SHORTCUT.to_string(),value)?;
-    restart_shortcut_handler(app_handle)?;
     Ok(())
 }
 

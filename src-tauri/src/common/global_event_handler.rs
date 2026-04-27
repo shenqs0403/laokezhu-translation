@@ -13,7 +13,7 @@ lazy_static! {
 /// 启动快捷键
 /// 用户更换的时候直接替换快捷键
 /// 这个只在非Linux系统有效
-// #[cfg(any(target_os = "windows", target_os = "macos"))]
+#[cfg(any(target_os = "windows", target_os = "macos"))]
 pub fn start_shortcut_handler(app_handle: AppHandle) -> anyhow::Result<()> {
     let shortcut = get_item(KEY_SHORTCUT.to_string())?.value;
     debug!("启用的快捷键：{}",shortcut);
@@ -38,6 +38,7 @@ pub fn start_shortcut_handler(app_handle: AppHandle) -> anyhow::Result<()> {
     Ok(())
 }
 
+#[cfg(any(target_os = "windows", target_os = "macos"))]
 /// 重新监听快捷键，先解绑快捷键在重新绑定
 pub fn restart_shortcut_handler(app_handle: AppHandle) -> anyhow::Result<()> {
     unlisten_shortcut(&app_handle)?;
@@ -45,6 +46,7 @@ pub fn restart_shortcut_handler(app_handle: AppHandle) -> anyhow::Result<()> {
     Ok(())
 }
 
+#[cfg(any(target_os = "windows", target_os = "macos"))]
 fn unlisten_shortcut(app_handle: &AppHandle) -> anyhow::Result<()> {
     let guard = SHORTCUT.lock().unwrap();
     app_handle.global_shortcut().unregister(guard.parse::<Shortcut>()?)?;
@@ -52,6 +54,7 @@ fn unlisten_shortcut(app_handle: &AppHandle) -> anyhow::Result<()> {
 }
 
 /// 设置全局id,便于注销操作
+#[cfg(any(target_os = "windows", target_os = "macos"))]
 fn set_shortcut_id(shortcut: String) -> anyhow::Result<()> {
     let mut guard = SHORTCUT.lock().unwrap();
     *guard = shortcut;
