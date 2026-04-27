@@ -9,13 +9,13 @@
                      @keydown="loadShortcut"
                      @blur="saveShortcut"/>
           </n-form-item>
-          <n-form-item label="划词等待时间（毫秒）">
+          <n-form-item label="轮询（毫秒）">
             <n-input v-model:value="basic.swipe"
               @blur="saveSwipe"
             />
           </n-form-item>
           <n-alert type="warning" :show-icon="false" v-show="isWayland">
-            划词等待时间：是选中文本后 N 毫秒后显示菜单
+            轮询：是选中文本后 N 毫秒后显示菜单
           </n-alert>
         </n-form>
       </n-tab-pane>
@@ -64,13 +64,14 @@ const loadShortcut = (event: KeyboardEvent) => {
     shortcutKeyArray.push(event.code);
     shortcutKeyArray.sort();
   }
-  basic.value.shortcut = shortcutKeyArray.join("+");
+  basic.value.shortcut = shortcutKeyArray.join("+")
+      .replace(/Left/g,"")
+      .replace("/Right/g","");
 }
 
 const saveShortcut = () => {
   shortcutKeyArray = [];
-  console.log(basic.value.shortcut)
-  invoke<any>("save_key_value", {key: "basic.shortcut", value: basic.value.shortcut})
+  invoke<any>("update_shortcut", {value: basic.value.shortcut})
       .then(() => message.success("保存成功"))
       .catch(e => message.error(e));
 }
@@ -107,7 +108,7 @@ onMounted(() => {
 
   loadAllEngines();
   invoke<string>("get_key_value", {key: "basic.swipe"})
-      .then(value => basic.value.swipe = value == "true")
+      .then(value => basic.value.swipe = parseInt(value))
       .catch(e => message.error(e));
   invoke<string>("get_key_value", {key: "basic.shortcut"})
       .then(value => basic.value.shortcut = value)

@@ -1,119 +1,59 @@
-use crate::commands::get_key_value;
-use crate::common::windows_manager::{create_or_show, set_position, LABEL_MENU, LABEL_TRANSLATE};
-use crate::dao::key_value_dao::{get_item, set_item, KEY_SHORTCUT, KEY_SWIPE};
-use std::env;
 use std::sync::Mutex;
 use lazy_static::lazy_static;
-use tauri::{AppHandle};
-use tauri_plugin_global_shortcut::{Shortcut, ShortcutState};
+use tauri::{AppHandle, Listener};
+use tauri_plugin_global_shortcut::{GlobalShortcutExt, Shortcut, ShortcutState};
 use tauri_plugin_log::log::{debug, error};
-use crate::common;
+use crate::common::windows_manager::{create_or_show, set_position, LABEL_TRANSLATE};
+use crate::dao::key_value_dao::{get_item, KEY_SHORTCUT};
 
 lazy_static! {
-    pub static ref READ_TEXT: Mutex<String> = Mutex::new(String::new());
-    static ref SWIPE_TIME: Mutex<u64> = Mutex::new(300);
-    static ref STOP_FLAG: Mutex<bool> = Mutex::new(false);
+    static ref SHORTCUT: Mutex<String> = Mutex::new(String::new());
 }
 
-/// 注册全局鼠标事件，这个方法在Linux Wayland环境无效
-pub fn register_mouse_event(app_handle: &AppHandle) -> anyhow::Result<()> {
-    load_swipe_time_from_db()?;
-    let handler = app_handle.clone();
-    std::thread::spawn(move || -> anyhow::Result<()> {
-        while !get_stop_flag()? {
-            let i = get_swipe_time()?;
-            if i < 100 {
-                break;
-            }
-            std::thread::sleep(std::time::Duration::from_millis(i));
-            let string = common::read_selected_text()?.trim().to_string();
-            debug!("读取剪切板内容：{}",string);
-            if string.is_empty() {
-                continue;
-            }
-
-            let x = !compare_text(&string);
-            debug!("比较结果：{}",x);
-            if !compare_text(&string) {
-                set_text(string)?;
-                let window = create_or_show(&handler, LABEL_MENU)?;
-                // window.set_always_on_top(true)?;
-                set_position(&window,handler.cursor_position()?)?;
-            }
-        }
-        debug!("退出轮询");
-        Ok(())
-    });
-    Ok(())
-}
-
-/// 不支持Linux wayland
-pub fn register_global_shortcut(app_handle: &AppHandle) -> anyhow::Result<()> {
-    if env::var("WAYLAND_DISPLAY").is_ok() {
-        error!("快捷键不支持Wayland");
-        return Ok(());
-    }
-    let shortcut: Shortcut = load_shortcut()?.parse()?;
-    debug!("shortcut: {:?}", shortcut);
-
+/// 启动快捷键
+/// 用户更换的时候直接替换快捷键
+/// 这个只在非Linux系统有效
+// #[cfg(any(target_os = "windows", target_os = "macos"))]
+pub fn start_shortcut_handler(app_handle: AppHandle) -> anyhow::Result<()> {
+    let shortcut = get_item(KEY_SHORTCUT.to_string())?.value;
+    debug!("启用的快捷键：{}",shortcut);
     let plugin = tauri_plugin_global_shortcut::Builder::new()
-        .with_shortcuts([shortcut])?
-        .with_handler(move |handler, hotkey, event| {
-            if event.state != ShortcutState::Pressed {
-                return;
+        .with_handler(|handler, hotkey, event| {
+            if event.state == ShortcutState::Pressed {
+                let window_result = create_or_show(handler, LABEL_TRANSLATE);
+                if window_result.is_err() {
+                    error!("{}", window_result.err().unwrap());
+                } else {
+                    let win = window_result.unwrap();
+                    win.show().unwrap();
+                    win.set_always_on_top(true).unwrap();
+                    set_position(&win,handler.cursor_position().unwrap()).ok();
+                }
             }
-            debug!("快捷键按下：{}", hotkey);
-            create_or_show(handler, LABEL_TRANSLATE)
-                .and_then(|win| {
-                    debug!("创建窗口对象");
-                    win.show()?;
-                    win.set_focus()?;
-                    let pos = handler.cursor_position()?;
-                    set_position(&win, pos)
-                })
-                .ok();
-            ()
         })
         .build();
+    set_shortcut_id(shortcut.clone())?;
     app_handle.plugin(plugin)?;
+    app_handle.global_shortcut().register(shortcut.parse::<Shortcut>()?)?;
     Ok(())
 }
 
-fn load_shortcut() -> anyhow::Result<String> {
-    get_key_value(KEY_SHORTCUT.to_string()).map_err(anyhow::Error::from)
-}
-
-fn set_text(text: String) -> anyhow::Result<()> {
-    let mut guard = READ_TEXT.lock().unwrap();
-    debug!("设置前：{}",&guard);
-    *guard = text;
-    debug!("设置后：{}",&guard);
+/// 重新监听快捷键，先解绑快捷键在重新绑定
+pub fn restart_shortcut_handler(app_handle: AppHandle) -> anyhow::Result<()> {
+    unlisten_shortcut(&app_handle)?;
+    start_shortcut_handler(app_handle)?;
     Ok(())
 }
 
-pub fn set_swipe_time(time: u64) -> anyhow::Result<()> {
-    let mut guard = SWIPE_TIME.lock().unwrap();
-    *guard = time;
+fn unlisten_shortcut(app_handle: &AppHandle) -> anyhow::Result<()> {
+    let guard = SHORTCUT.lock().unwrap();
+    app_handle.global_shortcut().unregister(guard.parse::<Shortcut>()?)?;
     Ok(())
 }
 
-fn get_swipe_time() -> anyhow::Result<u64> {
-    let mut guard = SWIPE_TIME.lock().unwrap();
-    Ok(*guard)
-}
-
-pub fn load_swipe_time_from_db() -> anyhow::Result<u64> {
-    let i = get_item(KEY_SWIPE.to_string())?.value.parse::<u64>()?;
-    let mut guard = SWIPE_TIME.lock().unwrap();
-    *guard = i;
-    Ok(i)
-}
-
-/// 减小lock的范围
-fn compare_text(new_str: &str) -> bool {
-    READ_TEXT.lock().unwrap().as_str() == new_str
-}
-
-fn get_stop_flag() -> anyhow::Result<bool> {
-    Ok(STOP_FLAG.lock().unwrap().clone())
+/// 设置全局id,便于注销操作
+fn set_shortcut_id(shortcut: String) -> anyhow::Result<()> {
+    let mut guard = SHORTCUT.lock().unwrap();
+    *guard = shortcut;
+    Ok(())
 }
