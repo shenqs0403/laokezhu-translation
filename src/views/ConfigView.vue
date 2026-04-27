@@ -3,7 +3,7 @@
     <n-tabs>
       <n-tab-pane name="基础配置">
         <n-form label-width="auto">
-          <n-form-item label="快捷键">
+          <n-form-item label="快捷键" v-show="!isLinux">
             <n-input v-model:value="basic.shortcut"
                      :disabled="isWayland"
                      @keydown="loadShortcut"
@@ -53,6 +53,7 @@ import {useMessage} from "naive-ui";
 
 let message = useMessage();
 
+const isLinux = navigator.userAgent.indexOf("Linux") > 0;
 // 快捷键的数组
 let shortcutKeyArray: string[] = [];
 // 是否是Wayland,如果是禁用快捷键、swipe
