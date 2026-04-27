@@ -40,24 +40,23 @@ pub fn get_locale() -> anyhow::Result<String> {
     Ok(string)
 }
 
-#[cfg(target_os = "linux")]
-pub fn get_selected_text() -> anyhow::Result<String> {
-    Clipboard::new()?
-        .get()
-        .clipboard(LinuxClipboardKind::Primary)
-        .text()
-        .map_err(|e| anyhow::anyhow!(e))
-}
-
-#[cfg(any(target_os = "macos", target_os = "windows"))]
-pub fn get_selected_text() -> anyhow::Result<String> {
-    rdev::simulate(&EventType::KeyPress(Key::ControlLeft))?;
-    rdev::simulate(&EventType::KeyPress(Key::KeyC))?;
-    rdev::simulate(&EventType::KeyRelease(Key::KeyC))?;
-    rdev::simulate(&EventType::KeyRelease(Key::ControlLeft))?;
-    std::thread::sleep(std::time::Duration::from_millis(5));
-    Clipboard::new()?
-        .get()
-        .text()
-        .map_err(|e| anyhow::anyhow!(e))
+pub fn read_selected_text() -> anyhow::Result<String> {
+    #[cfg(target_os = "linux")]
+    {
+        Clipboard::new()?.get()
+            .clipboard(LinuxClipboardKind::Primary)
+            .text()
+            .map_err(anyhow::Error::from)
+    }
+    #[cfg(not(target_os = "linux"))]
+    {
+        rdev::simulate(&EventType::KeyPress(Key::ControlLeft))?;
+        rdev::simulate(&EventType::KeyPress(Key::KeyC))?;
+        rdev::simulate(&EventType::KeyRelease(Key::KeyC))?;
+        rdev::simulate(&EventType::KeyRelease(Key::ControlLeft))?;
+        std::thread::sleep(std::time::Duration::from_millis(10));
+        Clipboard::new()?.get()
+            .text()
+            .map_err(anyhow::Error::from)
+    }
 }

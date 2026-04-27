@@ -5,3 +5,10 @@ pub fn test_env() {
     let result = env::var("XDG_SESSION_TYPE");
     println!("{:?} {:?}", result, result.is_ok());
 }
+
+#[test]
+pub fn test_baidu() {
+    let string = "zh_CN".to_string();
+    let x = string.split("_").next().unwrap();
+    println!("{:?}", x);
+}
