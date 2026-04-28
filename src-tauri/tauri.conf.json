@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "identifier": "com.github.laokezhu.translation",
   "build": {
-    "beforeDevCommand": "npm run dev",
+    "beforeDevCommand": "",
     "devUrl": "http://localhost:1420",
     "beforeBuildCommand": "npm run build",
     "frontendDist": "../dist"
@@ -19,13 +19,35 @@
         "label": "config",
         "width": 400,
         "height": 700,
-        "create": false
+        "create": false,
+        "url": "/index.html/#/config"
+      },
+      {
+        "label": "translate",
+        "title": "失去焦点自动关闭",
+        "width": 400,
+        "height": 400,
+        "create": false,
+        "url": "/index.html/#/translate"
+      },
+      {
+        "label": "menu",
+        "width": 120,
+        "height": 40,
+        "create": false,
+        "url": "/index.html/#/menu",
+        "resizable": false,
+        "transparent": true,
+        "shadow": false,
+        "skipTaskbar": true,
+        "decorations": false
       },
       {
         "label": "about",
         "width": 400,
         "height": 700,
-        "create": false
+        "create": false,
+        "url": "/index.html/#/about"
       }
     ],
     "security": {

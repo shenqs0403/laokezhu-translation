@@ -27,6 +27,18 @@ anyhow = "1.0.102"
 rust-i18n = "3.1.5"
 sys-locale = "0.3.2"
 
+#[target.'cfg(any(target_os="windows",target_os="macos"))'.dependencies]
+tauri-plugin-global-shortcut = "2.3.1"
+uuid = { version = "1.23.0", features = ["v4"] }
+md5 = "0.8.0"
+hex = "0.4.3"
+tauri-plugin-http = "2.5.8"
+urlencoding = "2.1.3"
+sha2 = "0.11.0"
+tokio = "1.52.1"
+clipboard-master = "4.0.0"
+dashmap = "6.1.0"
+
 [package.metadata.i18n]
 default-lang="zh-CN"
 langs= ["zh-CN", "en"]
