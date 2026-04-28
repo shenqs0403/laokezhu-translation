@@ -12,6 +12,7 @@ pub fn init(app_handle: &AppHandle) -> anyhow::Result<()> {
     let menu = Menu::with_items(app_handle, &[&config_item, &about_item, &quit_item])?;
     let icon = TrayIconBuilder::new()
         .menu(&menu)
+        .icon(app_handle.default_window_icon().unwrap().clone())
         .on_menu_event(|handler, event| {
             let _ = match event.id.as_ref() {
                 "quit" => exit(1),
