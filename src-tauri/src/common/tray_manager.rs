@@ -6,9 +6,9 @@ use tauri_plugin_log::log::warn;
 use crate::common::windows_manager::{create_or_show, LABEL_ABOUT, LABEL_CONFIG};
 
 pub fn init(app_handle: &AppHandle) -> anyhow::Result<()> {
-    let quit_item = MenuItem::with_id(app_handle, "quit", "Quit", true, None::<&str>)?;
-    let config_item = MenuItem::with_id(app_handle, "config", "Config", true, None::<&str>)?;
-    let about_item = MenuItem::with_id(app_handle, "about", "About", true, None::<&str>)?;
+    let quit_item = MenuItem::with_id(app_handle, "quit", "退出", true, None::<&str>)?;
+    let config_item = MenuItem::with_id(app_handle, "config", "配置", true, None::<&str>)?;
+    let about_item = MenuItem::with_id(app_handle, "about", "关于", true, None::<&str>)?;
     let menu = Menu::with_items(app_handle, &[&config_item, &about_item, &quit_item])?;
     let icon = TrayIconBuilder::new()
         .menu(&menu)
