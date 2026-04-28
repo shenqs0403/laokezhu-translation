@@ -79,14 +79,14 @@ const saveShortcut = () => {
       .catch(e => message.error(e));
 }
 
-const saveSwipe = () => {
-  if (basic.value.swipe < 0) {
-    basic.value.swipe = 0;
-  }
-  invoke("update_swipe", {value: basic.value.swipe + ""})
-      .then(() => message.success("保存成功"))
-      .catch(e => message.error(e));
-}
+// const saveSwipe = () => {
+//   if (basic.value.swipe < 0) {
+//     basic.value.swipe = 0;
+//   }
+//   invoke("update_swipe", {value: basic.value.swipe + ""})
+//       .then(() => message.success("保存成功"))
+//       .catch(e => message.error(e));
+// }
 
 const engineSelectChangeHandler = (val: string) => {
   engines.value?.forEach((item) => {

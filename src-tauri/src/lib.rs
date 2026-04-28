@@ -3,6 +3,7 @@ mod common;
 mod dao;
 mod translators;
 
+use std::env;
 use crate::common::windows_manager::{create_or_show, set_position, LABEL_TRANSLATE};
 use commands::{
     get_all_engines, get_key_value, is_wayland, open_translate_window, save_engine, save_key_value,
@@ -15,6 +16,7 @@ use tauri_plugin_log::log::{error, warn};
 pub fn run() {
     tauri::Builder::default()
         .setup(|app| {
+            std::fs::create_dir_all(env::home_dir().unwrap().join(".config").join("laokezhu")).unwrap();
             let app_handler = app.handle();
             common::init(app_handler)?;
             dao::init()
