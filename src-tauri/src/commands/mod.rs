@@ -51,8 +51,8 @@ pub fn update_shortcut(app_handle: AppHandle,value: String) -> tauri::Result<()>
 #[command]
 pub fn update_swipe(app_handle: AppHandle,value: String) -> tauri::Result<()> {
     set_item(KEY_SWIPE.to_string(),value.clone())?;
-    let i: u64 = value.parse().unwrap_or_else(|e| 300);
-    common::poll_event_handler::set_poll_time(i)?;
+    // let i: u64 = value.parse().unwrap_or_else(|e| 300);
+    // common::poll_event_handler::set_poll_time(i)?;
     Ok(())
 }
 

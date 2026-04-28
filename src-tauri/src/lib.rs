@@ -23,7 +23,7 @@ pub fn run() {
             #[cfg(any(target_os = "windows", target_os = "macos"))]
             common::global_event_handler::start_shortcut_handler(app_handler.clone())?;
 
-            common::poll_event_handler::start_poll(app_handler.clone())?;
+            // common::poll_event_handler::start_poll(app_handler.clone())?;
             common::tray_manager::init(app_handler)?;
             Ok(())
         })

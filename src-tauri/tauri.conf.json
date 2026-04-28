@@ -46,7 +46,8 @@
         "label": "about",
         "width": 400,
         "height": 700,
-        "create": false
+        "create": false,
+        "url": "/index.html/#/about"
       }
     ],
     "security": {

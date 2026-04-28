@@ -3,15 +3,13 @@
 **This document is translated by translation software**
 
 Current software version: 1.0.0
+Currently, only Youdao and Baidu are supported. Afterwards, with each minor version upgrade, at least one translation engine will be added, such as upgrading to 1.0.1
 
-Currently only Youdao and Baidu are supported. Each minor version upgrade will add at least one translation engine, e.g., upgrade to 1.0.1.
+### Linux
 
-### Linux Wayland
-
-Since the Linux Wayland environment does not support global mouse and keyboard events, text selection translation is not available in Wayland.Shortcut settings can be configured in: System Settings → Keyboard → View and Customize Shortcuts → Custom Shortcuts (This is for Debian 13 Gnome Desktop).
-**Name**: Custom, you can set it freely.Command:
-
-**Command:** 
+The shortcut key settings can be found in the "System Settings" -> "Keyboard" -> "View and Customize Shortcut Keys" -> "Custom Shortcut Keys" interface settings (here is for Debian 13 Gnome desktop)
+**Name:** Custom, Feel Free to Write
+**Command:**
 
 ~~~shell
 laokezhu-translation --translate
@@ -32,9 +30,9 @@ chmod +x ~/laokezhu_translation_translate
 
 Then replace the command field with ~/laokezhu_translation_translate.
 
-### On Linux X11, Windows, MacOS
+### Configuration interface
 
-Shortcuts and text selection can be set directly in the settings interface.
+Linux systems use the built-in shortcut management tool to set shortcuts, while Windows and Mac use the shortcut settings in the configuration interface
 
 ### Special Note
 

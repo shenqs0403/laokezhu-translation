@@ -9,13 +9,15 @@
                      @keydown="loadShortcut"
                      @blur="saveShortcut"/>
           </n-form-item>
-          <n-form-item label="轮询（毫秒）">
-            <n-input v-model:value="basic.swipe"
-              @blur="saveSwipe"
-            />
-          </n-form-item>
-          <n-alert type="warning" :show-icon="false" v-show="isWayland">
-            轮询：是选中文本后 N 毫秒后显示菜单
+<!--          <n-form-item label="轮询（毫秒）">-->
+<!--            <n-input v-model:value="basic.swipe"-->
+<!--              @blur="saveSwipe"-->
+<!--            />-->
+<!--          </n-form-item>-->
+          <n-alert type="warning" :show-icon="false">
+            Linux系统快捷键需要在系统设置中自行设置。<br>
+            启动翻译窗口的命令是： <br>
+            laokezhu-translation -- translate
           </n-alert>
         </n-form>
       </n-tab-pane>
@@ -78,8 +80,8 @@ const saveShortcut = () => {
 }
 
 const saveSwipe = () => {
-  if (basic.value.swipe < 100) {
-    basic.value.swipe = 100;
+  if (basic.value.swipe < 0) {
+    basic.value.swipe = 0;
   }
   invoke("update_swipe", {value: basic.value.swipe + ""})
       .then(() => message.success("保存成功"))

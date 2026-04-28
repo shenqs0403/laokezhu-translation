@@ -4,9 +4,7 @@
 
 目前仅支持有道和百度两个，之后每个小版本的升级都会增加至少一个翻译引擎，例如升级到1.0.1
 
-## Linux Wayland
-
-由于Linux Wayland 环境不支持全局鼠标和键盘事件，在Wayland环境暂不提供划词功能。
+## Linux
 
 快捷键设置需要在系统设置 -> 键盘 -> 查看及自定义快捷键 -> 自定义快捷键    界面设置（这里是Debian13 Gnome桌面的）
 
@@ -35,9 +33,9 @@ chmod +x ~/laokezhu_translation_translate
 
 在把 ~/laokezhu_translation_translate 替换“命令”里的内容
 
-### 在Linux X11、Windows、MacOS
+### 配置界面
 
-快捷键和划词在配置界面设置即可
+Linux系统使用系统在带的快捷键管理工具设置快捷键，Win和Mac使用配置界面的快捷键设置
 
 ### 特别说明
 
