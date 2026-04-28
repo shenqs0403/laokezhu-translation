@@ -78,7 +78,10 @@ const saveShortcut = () => {
 }
 
 const saveSwipe = () => {
-  invoke("save_key_value", {key: "basic.swipe", value: basic.value.swipe + ""})
+  if (basic.value.swipe < 100) {
+    basic.value.swipe = 100;
+  }
+  invoke("update_swipe", {value: basic.value.swipe + ""})
       .then(() => message.success("保存成功"))
       .catch(e => message.error(e));
 }

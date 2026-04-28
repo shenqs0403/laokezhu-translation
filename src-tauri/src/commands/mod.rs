@@ -4,8 +4,8 @@ use crate::dao::{Engine};
 use tauri::{command, AppHandle};
 use tauri_plugin_log::log::{debug};
 use crate::common::windows_manager::{create_or_show, set_position, LABEL_TRANSLATE};
-use crate::{dao};
-use crate::dao::key_value_dao::{get_item, set_item};
+use crate::{common, dao};
+use crate::dao::key_value_dao::{get_item, set_item, KEY_SWIPE};
 use crate::translators::start_translation;
 
 /// 划词菜单点击翻译专门提供的方法
@@ -45,6 +45,14 @@ pub fn save_engine(engine: Engine) -> tauri::Result<usize> {
 pub fn update_shortcut(app_handle: AppHandle,value: String) -> tauri::Result<()> {
     common::global_event_handler::restart_shortcut_handler(app_handle)?;
     set_item(KEY_SHORTCUT.to_string(),value)?;
+    Ok(())
+}
+
+#[command]
+pub fn update_swipe(app_handle: AppHandle,value: String) -> tauri::Result<()> {
+    set_item(KEY_SWIPE.to_string(),value.clone())?;
+    let i: u64 = value.parse().unwrap_or_else(|e| 300);
+    common::poll_event_handler::set_poll_time(i)?;
     Ok(())
 }
 

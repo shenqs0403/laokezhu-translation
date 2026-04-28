@@ -1,9 +1,9 @@
-use std::sync::Mutex;
+use std::sync::{Mutex};
 use lazy_static::lazy_static;
-use tauri::{AppHandle, Listener};
+use tauri::{AppHandle};
 use tauri_plugin_global_shortcut::{GlobalShortcutExt, Shortcut, ShortcutState};
-use tauri_plugin_log::log::{debug, error};
-use crate::common::windows_manager::{create_or_show, set_position, LABEL_TRANSLATE};
+use tauri_plugin_log::log::{debug, error, warn};
+use crate::common::windows_manager::{create_or_show, set_position, LABEL_MENU, LABEL_TRANSLATE};
 use crate::dao::key_value_dao::{get_item, KEY_SHORTCUT};
 
 lazy_static! {

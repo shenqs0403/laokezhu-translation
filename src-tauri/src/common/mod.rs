@@ -1,6 +1,7 @@
 pub mod windows_manager;
 pub mod global_event_handler;
 pub mod tray_manager;
+pub mod poll_event_handler;
 
 use arboard::{Clipboard, GetExtLinux, LinuxClipboardKind};
 use rdev::{EventType, Key};
@@ -30,6 +31,7 @@ fn init_log(app_handle: &AppHandle) -> tauri::Result<()> {
     };
 
     let plugin = tauri_plugin_log::Builder::new()
+        // .level(level)
         .target(target)
         .build();
     app_handle.plugin(plugin)
@@ -55,7 +57,6 @@ pub fn read_selected_text() -> anyhow::Result<String> {
         rdev::simulate(&EventType::KeyPress(Key::KeyC))?;
         rdev::simulate(&EventType::KeyRelease(Key::KeyC))?;
         rdev::simulate(&EventType::KeyRelease(Key::ControlLeft))?;
-        std::thread::sleep(std::time::Duration::from_millis(10));
         Clipboard::new()?.get()
             .text()
             .map_err(anyhow::Error::from)

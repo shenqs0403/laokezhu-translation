@@ -1,5 +1,15 @@
 use std::env;
+use std::sync::Mutex;
 use sha2::Digest;
+
+#[test]
+pub fn test_string () {
+    println!("{}","aa".eq("aa"));
+    let mutex = Mutex::new("1".to_string());
+    // println!("{:?}", mutex.lock().unwrap().cmp(&"0".to_string()));
+    let guard = mutex.lock().unwrap();
+    println!("{}", guard.eq(&"2".to_string()));
+}
 
 #[test]
 pub fn test_env() {

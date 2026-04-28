@@ -7,6 +7,7 @@ use crate::common::windows_manager::{create_or_show, set_position, LABEL_TRANSLA
 use commands::{
     get_all_engines, get_key_value, is_wayland, open_translate_window, save_engine, save_key_value,
     translate_selected_text,
+    update_swipe
 };
 use tauri_plugin_log::log::{error, warn};
 
@@ -22,6 +23,7 @@ pub fn run() {
             #[cfg(any(target_os = "windows", target_os = "macos"))]
             common::global_event_handler::start_shortcut_handler(app_handler.clone())?;
 
+            common::poll_event_handler::start_poll(app_handler.clone())?;
             common::tray_manager::init(app_handler)?;
             Ok(())
         })
@@ -45,6 +47,7 @@ pub fn run() {
             commands::update_shortcut,
             get_key_value,
             save_engine,
+            update_swipe,
             is_wayland,
             translate_selected_text,
             open_translate_window
