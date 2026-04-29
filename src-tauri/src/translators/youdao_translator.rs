@@ -20,7 +20,10 @@ impl YoudaoTranslator{
         }
         let string = sys_locale::get_locale().unwrap_or_else(|| "en".to_string());
         if ["zh-HK","zh-SG","zh-TW"].contains(&string.as_str()) {
-            return Ok("cht".to_string());
+            return Ok("zh-CHT".to_string());
+        }
+        if "zh-CN".eq(&string) { 
+            return Ok("zh-CNS".to_string());
         }
         Ok(string.split("-").next().unwrap().to_string())
     }
