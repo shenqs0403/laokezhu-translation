@@ -11,6 +11,7 @@ use commands::{
     update_swipe
 };
 use tauri_plugin_log::log::{error, warn};
+use crate::dao::upgrade;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
@@ -19,8 +20,8 @@ pub fn run() {
             std::fs::create_dir_all(env::home_dir().unwrap().join(".config").join("laokezhu")).unwrap();
             let app_handler = app.handle();
             common::init(app_handler)?;
-            dao::init()
-                .unwrap_or_else(|e| warn!("数据库初始化出了点文件，如果是表已经存在问题则忽律"));
+            dao::init().unwrap_or_else(|e| warn!("数据库初始化出了点文件，如果是表已经存在问题则忽律"));
+            upgrade()?;
             // 必须在dao初始化完成后使用
             #[cfg(any(target_os = "windows", target_os = "macos"))]
             common::global_event_handler::start_shortcut_handler(app_handler.clone())?;
