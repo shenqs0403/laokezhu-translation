@@ -6,7 +6,7 @@ pub mod poll_event_handler;
 use arboard::{Clipboard, GetExtLinux, LinuxClipboardKind};
 use rdev::{EventType, Key};
 use tauri::AppHandle;
-use tauri_plugin_log::log::LevelFilter;
+use tauri_plugin_log::log::{error, LevelFilter};
 use tauri_plugin_log::{Target, TargetKind};
 
 /// 当前 common 模块的初始化
@@ -46,10 +46,13 @@ pub fn get_locale() -> anyhow::Result<String> {
 pub fn read_selected_text() -> anyhow::Result<String> {
     #[cfg(target_os = "linux")]
     {
-        Clipboard::new()?.get()
+        Ok(Clipboard::new()?.get()
             .clipboard(LinuxClipboardKind::Primary)
             .text()
-            .map_err(anyhow::Error::from)
+            .unwrap_or_else(|e| {
+                error!("{}", e);
+                "".to_string()
+            }))
     }
     #[cfg(not(target_os = "linux"))]
     {
