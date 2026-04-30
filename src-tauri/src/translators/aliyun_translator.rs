@@ -38,6 +38,14 @@ impl AliyunTranslator {
 
 impl Translator for AliyunTranslator {
     async fn start_http(&mut self) -> anyhow::Result<String> {
+        let text = read_selected_text()?;
+        if text.trim().is_empty() {
+            return Ok(String::new());
+        }
+        if self.engine.url.is_empty() || self.engine.appid.is_empty() || self.engine.engine_key.is_empty() {
+            anyhow::bail!("请正确配置《阿里云》翻译引擎")
+        }
+
         let mut map: BTreeMap<&str, String> = BTreeMap::new();
         map.insert("Action","TranslateGeneral".to_string());
         map.insert("Version","2018-10-12".to_string());
@@ -50,7 +58,6 @@ impl Translator for AliyunTranslator {
         map.insert("FormatType","text".to_string());
         map.insert("Scene","general".to_string());
 
-        let text = read_selected_text()?;
         map.insert("SourceLanguage",self.get_text_lang(&text));
         map.insert("SourceText",text);
         map.insert("TargetLanguage",self.get_lang()?);
