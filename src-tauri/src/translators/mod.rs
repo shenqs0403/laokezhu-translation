@@ -8,6 +8,7 @@ use crate::dao::{engine_dao, Engine};
 pub mod baidu_translator;
 pub mod youdao_translator;
 pub mod aliyun_translator;
+pub mod tencent_translator;
 
 /// 翻译器的抽象接口
 pub trait Translator {
