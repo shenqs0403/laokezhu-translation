@@ -14,12 +14,16 @@ const languageOptions = ref<LanguageOption[]>([]);
 
 const showResult = (res: string) => {
   let json = JSON.parse(res);
+  console.log("---> ",json, "  ",typeof json)
   if (currentEngineName.value == "baidu") {
     targetText.value = json.trans_result.map((item: any) => item.dst).join("  ");
     distLang.value = json.to;
   } else if (currentEngineName.value == "youdao") {
     targetText.value = json.translation.join(" ");
     distLang.value = json.l.split("2")[1];
+  } else if (currentEngineName.value == "aliyun") {
+    targetText.value = json.Data.Translated;
+    distLang.value = json.target_lang;
   }
 }
 
@@ -31,7 +35,7 @@ const changeEngine = () => {
 
 const startTranslate = () => {
   invoke<string>("translate_selected_text",{engineName: currentEngineName.value,lang: distLang.value}).then(val => {
-    console.log(val);
+    console.log("====> ",val);
     showResult(val)
   }).catch(e => message.error(e));
 }
