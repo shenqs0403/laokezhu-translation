@@ -3,7 +3,7 @@ use rusqlite::{params, Transaction};
 use tauri::AppHandle;
 use tauri_plugin_log::log::debug;
 use crate::dao::{Engine, DB_CONN};
-static SQL_UPDATE_BY_ENGINE_NAME: &str = "update engine set enable = ?1,url = ?2,appid = ?3,engine_key = ?4 where engine_name = ?5";
+static SQL_UPDATE_BY_ENGINE_NAME: &str = "update engine set enable = ?1,url = ?2,appid = ?3,engine_key = ?4,region=?5 where engine_name = ?6";
 static SQL_DISABLE_ALL: &str = "update engine set enable = false";
 static SQL_ENABLE_BY_ENGINE_NAME: &str = "update engine set enable = 1 where engine_name = ?1";
 static SQL_QUERY_BY_ENGINE_NAME: &str = "select * from engine where engine_name = ?1";
@@ -31,7 +31,7 @@ pub fn create_engine_table_and_init_data() -> anyhow::Result<()> {
 
 pub fn save_engine(engine: Engine) -> anyhow::Result<usize> {
     let conn = DB_CONN.lock().unwrap();
-    let i = conn.execute(SQL_UPDATE_BY_ENGINE_NAME, params![engine.enable,engine.url,engine.appid,engine.engine_key,engine.engine_name])?;
+    let i = conn.execute(SQL_UPDATE_BY_ENGINE_NAME, params![engine.enable,engine.url,engine.appid,engine.engine_key,engine.region,engine.engine_name])?;
     debug!("修改引擎成功{}",i);
     if engine.enable {
         conn.execute(SQL_DISABLE_ALL, params![])?;
@@ -73,5 +73,6 @@ fn row_to_engine(row: &rusqlite::Row) -> rusqlite::Result<Engine> {
         appid: row.get(3)?,
         engine_key: row.get(4)?,
         enable: row.get(5)?,
+        region: row.get(6)?,
     })
 }

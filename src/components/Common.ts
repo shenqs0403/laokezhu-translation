@@ -13,7 +13,8 @@ export interface Engine {
     engine_key: string,
     enable: boolean,
     label?: string,
-    value?: string
+    value?: string,
+    region: string
 }
 
 export const engines = ref<Engine[]>([]);

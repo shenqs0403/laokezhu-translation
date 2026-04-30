@@ -67,6 +67,8 @@ pub struct Engine {
     pub engine_key: String,
     /// 是否启用，true-启用，false-停用
     pub enable: bool,
+    /// 区域，在腾讯翻译的时候使用，其他都是空字符串
+    pub region: String,
 }
 
 /// key-value存储对象
@@ -86,6 +88,7 @@ impl KeyValue {
 
 static UPGRADE_SQL_V_0: &str = r#"
 alter table engine add region text;
+update engine set region = '';
 insert into engine (engine_name,engine_zh_name, url, appid, engine_key, enable) values ('aliyun', '阿里云', 'https://mt.aliyuncs.com', '', '', false);
 insert into engine (engine_name,engine_zh_name, url, appid, engine_key, enable) values ('tencent', '腾讯', 'https://tmt.tencentcloudapi.com', '', '', false);
 "#;

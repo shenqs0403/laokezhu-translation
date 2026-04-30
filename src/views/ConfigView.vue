@@ -30,6 +30,9 @@
           <n-form-item label="url">
             <n-input v-model:value="currentEngine.url"/>
           </n-form-item>
+          <n-form-item label="区域" v-if="currentEngine.engine_name == 'tencent'">
+            <n-select v-model:value="currentEngine.region" :options="TENCENT_REGIONS"/>
+          </n-form-item>
           <n-form-item label="appid">
             <n-input v-model:value="currentEngine.appid"/>
           </n-form-item>
@@ -47,7 +50,7 @@
 </template>
 <script setup lang="ts">
 
-import {basic, currentEngine} from "../components/Config.ts";
+import {basic, currentEngine, TENCENT_REGIONS} from "../components/Config.ts";
 import {engines, loadAllEngines} from "../components/Common.ts";
 import {onMounted, ref} from "vue";
 import {invoke} from "@tauri-apps/api/core";
