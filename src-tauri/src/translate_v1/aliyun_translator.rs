@@ -12,8 +12,8 @@ struct AliyunTransDataResult {
 #[derive(Serialize,Deserialize,Debug,Default,Clone)]
 struct AliyunResult {
     #[serde(rename = "Code")]
-    code: i32,
-    #[serde(rename = "Message")]
+    code: String,
+    #[serde(rename = "Message",default="String::new")]
     message: String,
     #[serde(rename = "Data")]
     data: AliyunTransDataResult
@@ -58,19 +58,21 @@ impl Translator for AliyunTranslator {
             anyhow::bail!("请正确配置《阿里云》翻译引擎！！！")
         }
         let text = self.get_selected()?;
+        self.target_lang = self.default_target_lang()?;
+        self.source_lang = self.simple_language_check(&text)?;
         self.params.insert("Action".to_string(),"TranslateGeneral".to_string());
         self.params.insert("Version".to_string(),"2018-10-12".to_string());
         self.params.insert("Format".to_string(),"JSON".to_string());
-        self.params.insert("AccessKeyId".to_string(),"LTAI5t7TG5EXNF5F5DC8aroj".to_string());
+        self.params.insert("AccessKeyId".to_string(),self.engine.appid.clone());
         self.params.insert("SignatureNonce".to_string(),rand::random::<u32>().to_string());
         self.params.insert("Timestamp".to_string(),chrono::Utc::now().format("%Y-%m-%dT%H:%M:%SZ").to_string());
         self.params.insert("SignatureMethod".to_string(),"HMAC-SHA1".to_string());
         self.params.insert("SignatureVersion".to_string(),"1.0".to_string());
         self.params.insert("FormatType".to_string(),"text".to_string());
         self.params.insert("Scene".to_string(),"general".to_string());
-        self.params.insert("SourceLanguage".to_string(),self.simple_language_check(&text)?);
+        self.params.insert("SourceLanguage".to_string(),self.source_lang.clone());
         self.params.insert("SourceText".to_string(),text);
-        self.params.insert("TargetLanguage".to_string(),self.default_target_lang()?);
+        self.params.insert("TargetLanguage".to_string(),self.target_lang.clone());
 
         let param_str = self.params.iter().map(|(k, v)| format!("{}={}", urlencoding::encode(k), urlencoding::encode(v)))
             .collect::<Vec<String>>().join("&");
@@ -97,7 +99,7 @@ impl Translator for AliyunTranslator {
         let result = self.result_json.unwrap();
         Ok(TranslateResult {
             success: true,
-            msg: if result.code == 200 { "操作成功".to_string() } else { result.message },
+            msg: if result.code == "200" { "操作成功".to_string() } else { result.message },
             target_text: result.data.translated,
             source_text: "".to_string(),
             target_lang: self.target_lang,
@@ -105,5 +107,9 @@ impl Translator for AliyunTranslator {
             video_url: "".to_string(),
             symbol: "".to_string(),
         })
+    }
+
+    fn get_hmac_key(&self) -> String {
+        format!("{}&",self.engine.engine_key)
     }
 }

@@ -100,9 +100,9 @@ pub trait Translator {
     // 发送http请求
     async fn http_request(&mut self) -> anyhow::Result<&Self>{
         let response = tauri_plugin_http::reqwest::get(self.get_request_url()?).await?;
-        if !response.status().is_success() {
-            anyhow::bail!("请求异常：{}",response.status());
-        }
+        // if !response.status().is_success() {
+        //     anyhow::bail!("请求异常：{}",response.status());
+        // }
         let string = response.text().await?;
         debug!("请求返回：{}",string);
         self.result_json_handler(string)?;
@@ -110,7 +110,7 @@ pub trait Translator {
     }
     // 一个简陋的检查文本语言的方法
     fn simple_language_check(&self,text: &String) -> anyhow::Result<String> {
-        if text.len() != text.chars().count() { Ok("zh-CN".to_string()) } else { Ok("en-US".to_string()) }
+        if text.len() != text.chars().count() { Ok("zh".to_string()) } else { Ok("en".to_string()) }
     }
     // 获取选中的文本，如果文本为空抛出异常停止翻译操作
     fn get_selected(&self) -> anyhow::Result<String> {
