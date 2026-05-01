@@ -43,6 +43,7 @@ async fn execute_translator(mut trans: impl Translator) -> anyhow::Result<Transl
     trans.prepare_data()?;
     trans.http_request().await?;
     trans.translate_result()
+    // Ok(TranslateResult::default())
 }
 
 /// 统一翻译给前端界面的数据格式

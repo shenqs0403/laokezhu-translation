@@ -72,7 +72,7 @@ impl Translator for YoudaoTranslator {
         let url = format!("{}?q={}&from=auto&to={}&appKey={}&salt={}&sign={}&signType=v3&curtime={}",self.engine.url,text,self.default_target_lang()?,self.engine.appid,salt,sign,curtime);
         debug!("有道翻译请求url:{}",url);
         self.request_url = url;
-        todo!()
+        Ok(self)
     }
 
     fn get_request_url(&self) -> anyhow::Result<String> {

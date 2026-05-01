@@ -81,7 +81,7 @@ impl Translator for AliyunTranslator {
         let url = format!("{}?{}&Signature={}",self.engine.url,param_str,urlencoding::encode(&sign));
         debug!("阿里云翻译url:{}",url);
         self.request_url = url;
-        todo!()
+        Ok(self)
     }
 
     fn get_request_url(&self) -> anyhow::Result<String> {
