@@ -115,7 +115,7 @@ onMounted(() => {
     isWayland.value = value;
   })
 
-  loadAllEngines();
+  loadAllEngines().catch(e => message.error(e));
   invoke<string>("get_key_value", {key: "basic.swipe"})
       .then(value => basic.value.swipe = parseInt(value))
       .catch(e => message.error(e));

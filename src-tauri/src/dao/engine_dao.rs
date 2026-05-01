@@ -73,6 +73,6 @@ fn row_to_engine(row: &rusqlite::Row) -> rusqlite::Result<Engine> {
         appid: row.get(3)?,
         engine_key: row.get(4)?,
         enable: row.get(5)?,
-        region: row.get(6)?,
+        region: row.get(6).unwrap_or_else(|e| "".to_string()),
     })
 }

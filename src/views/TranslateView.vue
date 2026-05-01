@@ -12,21 +12,6 @@ const targetText = ref("");
 const distLang = ref("");
 const languageOptions = ref<LanguageOption[]>([]);
 
-const showResult = (res: string) => {
-  let json = JSON.parse(res);
-  console.log("---> ",json, "  ",typeof json)
-  if (currentEngineName.value == "baidu") {
-    targetText.value = json.trans_result.map((item: any) => item.dst).join("  ");
-    distLang.value = json.to;
-  } else if (currentEngineName.value == "youdao") {
-    targetText.value = json.translation.join(" ");
-    distLang.value = json.l.split("2")[1];
-  } else if (currentEngineName.value == "aliyun") {
-    targetText.value = json.Data.Translated;
-    distLang.value = json.target_lang;
-  }
-}
-
 const changeEngine = () => {
   distLang.value = "";
   languageOptions.value = languages[currentEngineName.value];
@@ -34,9 +19,9 @@ const changeEngine = () => {
 }
 
 const startTranslate = () => {
-  invoke<string>("translate_selected_text",{engineName: currentEngineName.value,lang: distLang.value}).then(val => {
-    console.log("====> ",val);
-    showResult(val)
+  invoke<any>("translate_selected_text",{engineName: currentEngineName.value,targetLang: distLang.value,sourceLang: ""}).then(val => {
+    targetText.value = val.target_text;
+    distLang.value = val.target_lang;
   }).catch(e => message.error(e));
 }
 

@@ -20,7 +20,7 @@ export interface Engine {
 export const engines = ref<Engine[]>([]);
 
 export const loadAllEngines = (): Promise<Engine[]> => {
-    return new Promise<Engine[]>(resolve => {
+    return new Promise<Engine[]>((resolve,reject) => {
         invoke<Engine[]>("get_all_engines").then(value => {
             console.log("加载引擎列表返回：",value)
             value.forEach(v => {
@@ -29,6 +29,6 @@ export const loadAllEngines = (): Promise<Engine[]> => {
             })
             engines.value = value;
             resolve(engines.value);
-        })
+        }).catch(e => reject(e));
     })
 }

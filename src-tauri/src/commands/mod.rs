@@ -6,6 +6,7 @@ use tauri_plugin_log::log::{debug};
 use crate::common::windows_manager::{create_or_show, set_position, LABEL_TRANSLATE};
 use crate::{common, dao};
 use crate::dao::key_value_dao::{get_item, set_item, KEY_SWIPE};
+use crate::translate_v1::{translate, TranslateResult};
 use crate::translators::start_translation;
 
 /// 划词菜单点击翻译专门提供的方法
@@ -17,10 +18,12 @@ pub fn open_translate_window(app_handle: AppHandle) -> tauri::Result<()> {
 }
 
 #[command]
-pub async fn translate_selected_text(engine_name: String,lang: String) -> tauri::Result<String> {
-    debug!("接收参数：{}  {}",engine_name,lang);
-    let result_str = start_translation(engine_name, lang).await?;
-    Ok(result_str)
+pub async fn translate_selected_text(engine_name: String,source_lang: String,target_lang: String) -> tauri::Result<TranslateResult> {
+    debug!("接收参数：{}  {}  {}",engine_name,source_lang,target_lang);
+    // let result_str = start_translation(engine_name, lang).await?;
+    // Ok(result_str)
+    let result = translate("".to_string(), source_lang, target_lang, engine_name).await?;
+    Ok(result)
 }
 
 #[command]

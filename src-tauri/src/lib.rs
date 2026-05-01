@@ -2,6 +2,7 @@ mod commands;
 mod common;
 mod dao;
 mod translators;
+mod translate_v1;
 
 use std::env;
 use crate::common::windows_manager::{create_or_show, set_position, LABEL_TRANSLATE};
