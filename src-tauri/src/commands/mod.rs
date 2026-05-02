@@ -7,7 +7,6 @@ use crate::common::windows_manager::{create_or_show, set_position, LABEL_TRANSLA
 use crate::{common, dao};
 use crate::dao::key_value_dao::{get_item, set_item, KEY_SWIPE};
 use crate::translate_v1::{translate, TranslateResult};
-use crate::translators::start_translation;
 
 /// 划词菜单点击翻译专门提供的方法
 #[command]

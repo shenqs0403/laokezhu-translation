@@ -1,7 +1,6 @@
 mod commands;
 mod common;
 mod dao;
-mod translators;
 mod translate_v1;
 
 use std::env;
