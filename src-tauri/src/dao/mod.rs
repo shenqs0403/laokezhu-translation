@@ -42,7 +42,7 @@ fn start_trans(mut db_version: i32) -> anyhow::Result<i32> {
     while db_version < CURRENT_VERSION {
         debug!("正在执行升级版本：{}",db_version);
         let sql = upgrade_sql_arr.get(db_version as usize).unwrap();
-        debug!("正在执行：{}",sql.clone());
+        debug!("正在执行：{}",sql);
         trans.execute_batch(sql)?;
         db_version += 1;
     }

@@ -8,13 +8,15 @@ use tauri_plugin_log::log::debug;
 use crate::dao;
 use crate::translate_v1::aliyun_translator::AliyunTranslator;
 use crate::translate_v1::baidu_translator::BaiduTranslator;
+use crate::translate_v1::tencent_translator::TencentTranslator;
 use crate::translate_v1::youdao_translator::YoudaoTranslator;
 
 pub mod baidu_translator;
 pub mod youdao_translator;
 pub mod aliyun_translator;
+pub mod tencent_translator;
 
-pub async fn translate(_source_text: String,source_lang: String,target_lang:String,engine_name:String) -> anyhow::Result<TranslateResult> {
+pub async fn translate(_source_text: String, source_lang: String, target_lang:String, engine_name:String) -> anyhow::Result<TranslateResult> {
     let engine: dao::Engine = if engine_name.is_empty() {
         dao::engine_dao::select_enable_engine()?
     } else {
@@ -33,6 +35,10 @@ pub async fn translate(_source_text: String,source_lang: String,target_lang:Stri
         },
         "aliyun" => {
             let x = AliyunTranslator::new(engine, source_lang, target_lang);
+            execute_translator(x).await
+        },
+        "tencent" => {
+            let x = TencentTranslator::new(engine, source_lang, target_lang);
             execute_translator(x).await
         }
         _ => anyhow::bail!("不支持的翻译引擎！！！")
