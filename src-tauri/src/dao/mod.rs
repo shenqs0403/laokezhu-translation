@@ -1,3 +1,4 @@
+use std::env;
 use std::sync::Mutex;
 use lazy_static::lazy_static;
 use serde::{Deserialize, Serialize};
@@ -9,8 +10,12 @@ pub mod engine_dao;
 pub mod key_value_dao;
 
 static CURRENT_VERSION: i32 = 1;
+#[cfg(not(debug_assertions))]
 lazy_static! {
-    // pub static ref DB_CONN: Mutex<rusqlite::Connection> = Mutex::new(rusqlite::Connection::open(env::home_dir().unwrap().join(".config").join("laokezhu").join("translate.sqlite")).unwrap());
+    pub static ref DB_CONN: Mutex<rusqlite::Connection> = Mutex::new(rusqlite::Connection::open(env::home_dir().unwrap().join(".config").join("laokezhu").join("translate.sqlite")).unwrap());
+}
+#[cfg(debug_assertions)]
+lazy_static! {
     pub static ref DB_CONN: Mutex<rusqlite::Connection> = Mutex::new(rusqlite::Connection::open("translate.sqlite").unwrap());
 }
 
