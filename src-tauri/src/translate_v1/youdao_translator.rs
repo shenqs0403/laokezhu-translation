@@ -2,7 +2,6 @@ use std::time::SystemTime;
 use serde::{Deserialize, Serialize};
 use sha2::Digest;
 use tauri_plugin_log::log::debug;
-use tauri_plugin_log::log::kv::ToKey;
 use uuid::Uuid;
 use crate::dao::Engine;
 use crate::translate_v1::{TranslateResult, Translator};

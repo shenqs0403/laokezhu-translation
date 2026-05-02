@@ -1,6 +1,4 @@
-use rusqlite::fallible_iterator::FallibleIterator;
-use rusqlite::{params, Transaction};
-use tauri::AppHandle;
+use rusqlite::{params};
 use tauri_plugin_log::log::debug;
 use crate::dao::{Engine, DB_CONN};
 static SQL_UPDATE_BY_ENGINE_NAME: &str = "update engine set enable = ?1,url = ?2,appid = ?3,engine_key = ?4,region=?5 where engine_name = ?6";
@@ -73,6 +71,6 @@ fn row_to_engine(row: &rusqlite::Row) -> rusqlite::Result<Engine> {
         appid: row.get(3)?,
         engine_key: row.get(4)?,
         enable: row.get(5)?,
-        region: row.get(6).unwrap_or_else(|e| "".to_string()),
+        region: row.get(6).unwrap_or_else(|_| "".to_string()),
     })
 }

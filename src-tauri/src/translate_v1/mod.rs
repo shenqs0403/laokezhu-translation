@@ -24,11 +24,11 @@ pub async fn translate(_source_text: String,source_lang: String,target_lang:Stri
     // todo 代优化代码
     match engine.engine_name.as_str() {
         "baidu" => {
-            let mut x = BaiduTranslator::new(engine, source_lang, target_lang);
+            let x = BaiduTranslator::new(engine, source_lang, target_lang);
             execute_translator(x).await
         },
         "youdao" => {
-            let mut x = YoudaoTranslator::new(engine, source_lang, target_lang);
+            let x = YoudaoTranslator::new(engine, source_lang, target_lang);
             execute_translator(x).await
         },
         "aliyun" => {

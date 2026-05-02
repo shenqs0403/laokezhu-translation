@@ -1,4 +1,4 @@
-use tauri::{AppHandle, Manager, PhysicalPosition, Position, WebviewWindow, WebviewWindowBuilder};
+use tauri::{AppHandle, Manager, PhysicalPosition, WebviewWindow, WebviewWindowBuilder};
 use tauri_plugin_log::log::{debug, error};
 
 pub static LABEL_TRANSLATE: &str = "translate";

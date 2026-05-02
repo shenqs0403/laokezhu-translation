@@ -1,9 +1,5 @@
-use std::collections::BTreeMap;
 use serde::{Deserialize, Serialize};
 use tauri_plugin_log::log::debug;
-use tauri_plugin_log::log::kv::ToKey;
-use uuid::Uuid;
-use crate::common::read_selected_text;
 use crate::dao::Engine;
 use crate::translate_v1::{TranslateResult, Translator};
 
