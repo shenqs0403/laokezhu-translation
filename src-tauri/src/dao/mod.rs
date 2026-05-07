@@ -1,7 +1,6 @@
 use std::env;
 use std::sync::Mutex;
 use lazy_static::lazy_static;
-use rusqlite::Transaction;
 use serde::{Deserialize, Serialize};
 use tauri_plugin_log::log::debug;
 use crate::dao::engine_dao::create_engine_table_and_init_data;
@@ -11,8 +10,12 @@ pub mod engine_dao;
 pub mod key_value_dao;
 
 static CURRENT_VERSION: i32 = 1;
+#[cfg(not(debug_assertions))]
 lazy_static! {
-    // pub static ref DB_CONN: Mutex<rusqlite::Connection> = Mutex::new(rusqlite::Connection::open(env::home_dir().unwrap().join(".config").join("laokezhu").join("translate.sqlite")).unwrap());
+    pub static ref DB_CONN: Mutex<rusqlite::Connection> = Mutex::new(rusqlite::Connection::open(env::home_dir().unwrap().join(".config").join("laokezhu").join("translate.sqlite")).unwrap());
+}
+#[cfg(debug_assertions)]
+lazy_static! {
     pub static ref DB_CONN: Mutex<rusqlite::Connection> = Mutex::new(rusqlite::Connection::open("translate.sqlite").unwrap());
 }
 
@@ -25,7 +28,7 @@ pub fn init() -> anyhow::Result<()> {
 
 pub fn upgrade() -> anyhow::Result<()> {
     debug!("upgrade called");
-    let value = get_item(KEY_DB_VERSION.to_string()).unwrap_or_else(|e| KeyValue::new(KEY_DB_VERSION, "0"));
+    let value = get_item(KEY_DB_VERSION.to_string()).unwrap_or_else(|_| KeyValue::new(KEY_DB_VERSION, "0"));
     debug!("upgrade called: {:?}", value);
     let mut db_version = value.value.parse::<i32>().unwrap_or(0);
     debug!("db_version: {}", db_version);
@@ -44,7 +47,7 @@ fn start_trans(mut db_version: i32) -> anyhow::Result<i32> {
     while db_version < CURRENT_VERSION {
         debug!("正在执行升级版本：{}",db_version);
         let sql = upgrade_sql_arr.get(db_version as usize).unwrap();
-        debug!("正在执行：{}",sql.clone());
+        debug!("正在执行：{}",sql);
         trans.execute_batch(sql)?;
         db_version += 1;
     }
@@ -82,7 +85,7 @@ pub struct KeyValue {
 
 impl KeyValue {
     pub fn new(key: &str, value: &str) -> Self {
-        KeyValue{ key: "".to_string(), value: "".to_string() }
+        KeyValue{ key: key.to_string(), value: value.to_string() }
     }
 }
 

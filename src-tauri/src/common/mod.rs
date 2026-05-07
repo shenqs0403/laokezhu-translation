@@ -1,10 +1,8 @@
 pub mod windows_manager;
 pub mod global_event_handler;
 pub mod tray_manager;
-pub mod poll_event_handler;
 
 use arboard::{Clipboard, GetExtLinux, LinuxClipboardKind};
-use rdev::{EventType, Key};
 use tauri::AppHandle;
 use tauri_plugin_log::log::{error, LevelFilter};
 use tauri_plugin_log::{Target, TargetKind};

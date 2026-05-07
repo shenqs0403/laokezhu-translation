@@ -1,14 +1,13 @@
 mod commands;
 mod common;
 mod dao;
-mod translators;
+mod translate_v1;
 
 use std::env;
 use crate::common::windows_manager::{create_or_show, set_position, LABEL_TRANSLATE};
 use commands::{
     get_all_engines, get_key_value, is_wayland, open_translate_window, save_engine, save_key_value,
-    translate_selected_text,
-    update_swipe
+    translate_selected_text
 };
 use tauri_plugin_log::log::{error, warn};
 use crate::dao::upgrade;
@@ -50,7 +49,6 @@ pub fn run() {
             commands::update_shortcut,
             get_key_value,
             save_engine,
-            update_swipe,
             is_wayland,
             translate_selected_text,
             open_translate_window

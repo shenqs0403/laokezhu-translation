@@ -8,6 +8,26 @@ export interface Languages {
 }
 
 export const languages: Languages = {
+    tencent: [
+        {"label":"简体中文","value":"zh"},
+        {"label":"繁體中文","value":"zh-TW"},
+        {"label":"English","value":"en"},
+        {"label":"日本語","value":"ja"},
+        {"label":"한국어","value":"ko"},
+        {"label":"Français","value":"fr"},
+        {"label":"Español","value":"es"},
+        {"label":"Italiano","value":"it"},
+        {"label":"Deutsch","value":"de"},
+        {"label":"Türkçe","value":"tr"},
+        {"label":"Русский","value":"ru"},
+        {"label":"Português","value":"pt"},
+        {"label":"Tiếng Việt","value":"vi"},
+        {"label":"Bahasa Indonesia","value":"id"},
+        {"label":"ภาษาไทย","value":"th"},
+        {"label":"Bahasa Melayu","value":"ms"},
+        {"label":"العربية","value":"ar"},
+        {"label":"हिन्दी","value":"hi"}
+    ],
     baidu: [
         { label: "Auto", value: "auto" },
         { label: "中文", value: "zh" },
