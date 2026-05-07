@@ -22,7 +22,7 @@
         </n-form>
       </n-tab-pane>
       <n-tab-pane name="引擎配置">
-        <n-select v-model:value="currentEngine.engine_name"
+        <n-select v-model:value="selectValue"
                   :options="engines"
                   @update:value="engineSelectChangeHandler"
         />
@@ -30,7 +30,7 @@
           <n-form-item label="url">
             <n-input v-model:value="currentEngine.url"/>
           </n-form-item>
-          <n-form-item label="区域" v-if="currentEngine.engine_name == 'tencent'">
+          <n-form-item label="区域" v-if="selectValue == 'tencent'">
             <n-select v-model:value="currentEngine.region" :options="TENCENT_REGIONS"/>
           </n-form-item>
           <n-form-item label="appid">
@@ -56,6 +56,7 @@ import {onMounted, ref} from "vue";
 import {invoke} from "@tauri-apps/api/core";
 import {useMessage} from "naive-ui";
 
+const selectValue = ref("");
 let message = useMessage();
 
 const isLinux = navigator.userAgent.indexOf("Linux") > 0;
@@ -91,13 +92,13 @@ const saveShortcut = () => {
 //       .catch(e => message.error(e));
 // }
 
-const engineSelectChangeHandler = (val: string) => {
-  engines.value?.forEach((item) => {
-    if (item.engine_name == val) {
-      currentEngine.value = item;
-      console.log(currentEngine.value);
+const engineSelectChangeHandler = (value: string) => {
+  for (let val of engines.value) {
+    if (val.engine_name == value) {
+      currentEngine.value = val;
+      break;
     }
-  })
+  }
 }
 
 const saveEngine = () => {

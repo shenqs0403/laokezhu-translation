@@ -1,6 +1,7 @@
 use std::env;
 use std::sync::Mutex;
 use sha2::Digest;
+use tauri::test::{mock_builder, mock_context};
 
 #[test]
 pub fn test_string () {
@@ -11,17 +12,13 @@ pub fn test_string () {
     println!("{}", guard.eq(&"2".to_string()));
 }
 
-#[test]
-pub fn test_env() {
-    let result = env::var("XDG_SESSION_TYPE");
-    println!("{:?} {:?}", result, result.is_ok());
-}
 
 #[test]
 pub fn test_baidu() {
-    let string = "zh_CN".to_string();
-    let x = string.split("_").next().unwrap();
-    println!("{:?}", x);
+    let s = "aaa";
+    println!("{} {}", s.len(), s.chars().count());
+    let s = "你好";
+    println!("{} {}", s.len(), s.chars().count());
 }
 
 #[test]
